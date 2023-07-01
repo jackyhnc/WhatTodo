@@ -1,0 +1,136 @@
+nav {
+    background-color:white;
+    min-width:270px;
+    height:790px;
+
+    border-radius:25px;
+    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+}
+.navbar__container {
+    padding-left:26px;
+    padding-right:26px;
+}
+
+
+.navbar__header-controls {
+    max-width:100%;
+    height:46px;
+
+    position:relative;
+}
+
+.navbar__header-controls__sizing-buttons {
+    display:flex;
+    gap:10px;
+
+    height:100%;
+    padding-left:16px;
+
+    place-items: center;
+}
+.navbar__header-controls--red, .navbar__header-controls--yellow, .navbar__header-controls--green {
+    padding:0px;
+    border-width:0px;
+
+    width:16px;
+    height:16px;
+
+    border-radius:50px;
+}
+.navbar__header-controls--red {
+    background-color:rgba(247,128,120);
+}
+.navbar__header-controls--yellow {
+    background-color:rgba(244,221,106);
+}
+.navbar__header-controls--green {
+    background-color:rgba(137,233,121);
+}
+.navbar__header-controls--three-dots__container {
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform: translateY(-50%);
+
+    padding:0px;
+    border-width:0px;
+
+    width:32px;
+    height:32px;
+
+    border-radius:50px;
+    background-color: rgb(255, 255, 255);
+}
+.navbar__header-controls--three-dots__container:active {
+    background-color: rgba(0, 0, 0, 0.123);
+}
+.navbar__header-controls--three-dots-svg {
+    width:100%;
+}
+
+
+.navbar__profile-greeting-section {
+    display:flex;
+    align-items: center;
+
+    height:112px;
+
+    border-bottom-style: solid;
+    border-bottom-width:2px;
+    border-bottom-color: rgb(230, 230, 230);
+}
+.navbar__profile-greeting-container {
+    display:flex;
+    place-items:center;
+
+    padding-left:8px;
+}
+.navbar__profile-image {
+    width:52px;
+    height:52px;
+
+    border-radius:50px;
+}
+.navbar__greeting {
+    font-weight:500;
+    font-size:20px;
+
+    margin-left:18px;
+}
+
+
+.navbar__menu-title{
+    color:rgb(154,154,154);
+    padding-top:6px;
+    padding-left:6px;
+}
+
+.navbar__menu-section__buttons-section {
+    display:grid;
+
+    padding-top:16px;
+    padding-bottom:16px;
+}
+.navbar__menu-section__button {
+    display:grid;
+    grid-template-columns: 36px 1fr;
+    align-items:center;
+
+    height:50px;
+    width:100%;
+
+    box-sizing: border-box;
+    padding-left:16px;
+    padding-right:8px;
+
+    border-radius:15px;
+}
+.navbar__menu-section__button:hover{
+    background-color:rgb(236, 236, 236)
+}
+.navbar__menu-section__buttons-icons {
+    width:20px;
+}
+.navbar__menu-section__buttons-text {
+    color:rgb(116, 116, 116);
+}
