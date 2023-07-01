@@ -1,0 +1,54 @@
+main {
+    display:flex;
+
+    margin:0 auto;
+    margin-top:90px;
+
+    max-width:1680px;
+    height:100%;
+
+}
+
+nav {
+    background-color:white;
+    min-width:270px;
+    height:790px;
+
+    border-radius:25px;
+    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+}
+
+.tasks-column__first {
+    min-width:630px;
+    margin-left:64px;
+    margin-right:64px;
+}
+
+.main-tasks-ui {
+    background-color:white;
+    max-width:100%;
+    height:184px;
+
+    border-radius:25px;
+    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+
+    margin-bottom:64px;
+}
+
+.todos-tasks-ui {
+    background-color:white;
+    max-width:100%;
+    height:500px;
+
+    border-radius:25px;
+    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+}
+
+.longterm-tasks-ui {
+    background-color:white;
+    min-width:630px;
+    height:500px;
+    
+    border-radius:25px;
+    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+}
