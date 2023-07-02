@@ -1,14 +1,14 @@
 nav {
     background-color:white;
     min-width:270px;
-    height:790px;
+    height:652px;
 
     border-radius:25px;
     box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
 }
 .navbar__container {
-    padding-left:26px;
-    padding-right:26px;
+    padding-left:32px;
+    padding-right:32px;
 }
 
 
@@ -61,7 +61,7 @@ nav {
     border-radius:50px;
     background-color: rgb(255, 255, 255);
 }
-.navbar__header-controls--three-dots__container:active {
+.navbar__header-controls--three-dots__container:hover {
     background-color: rgba(0, 0, 0, 0.123);
 }
 .navbar__header-controls--three-dots-svg {
@@ -74,10 +74,6 @@ nav {
     align-items: center;
 
     height:112px;
-
-    border-bottom-style: solid;
-    border-bottom-width:2px;
-    border-bottom-color: rgb(230, 230, 230);
 }
 .navbar__profile-greeting-container {
     display:flex;
@@ -98,20 +94,26 @@ nav {
     margin-left:18px;
 }
 
-
-.navbar__menu-title{
+.navbar__section {
+    border-top-style: solid;
+    border-top-width:2px;
+    border-top-color: rgb(230, 230, 230);
+}
+.navbar__section-title{
     color:rgb(154,154,154);
     padding-top:6px;
-    padding-left:6px;
 }
 
-.navbar__menu-section__buttons-section {
+.navbar__section__buttons-section {
     display:grid;
 
     padding-top:16px;
     padding-bottom:16px;
 }
-.navbar__menu-section__button {
+.navbar__section__buttons-section__button {
+    padding:0px;
+    border-width:0px;
+
     display:grid;
     grid-template-columns: 36px 1fr;
     align-items:center;
@@ -120,17 +122,23 @@ nav {
     width:100%;
 
     box-sizing: border-box;
-    padding-left:16px;
-    padding-right:8px;
+    padding-left:10px;
+    
 
     border-radius:15px;
+    background-color: white;;
 }
-.navbar__menu-section__button:hover{
+.navbar__section__buttons-section__button:hover{
     background-color:rgb(236, 236, 236)
 }
-.navbar__menu-section__buttons-icons {
+.navbar__section__buttons-section__button-icon {
     width:20px;
 }
-.navbar__menu-section__buttons-text {
-    color:rgb(116, 116, 116);
+.navbar__section__buttons-section__button-text {
+    text-align:left;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight:400;
+    font-size:16px;
+    
+    color:rgb(155, 155, 155);
 }
