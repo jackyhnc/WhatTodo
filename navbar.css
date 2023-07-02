@@ -1,4 +1,6 @@
 nav {
+    position:relative;
+
     background-color:white;
     min-width:270px;
     height:652px;
@@ -21,7 +23,7 @@ nav {
 
 .navbar__header-controls__sizing-buttons {
     display:flex;
-    gap:10px;
+    gap:12px;
 
     height:100%;
     padding-left:16px;
@@ -32,8 +34,8 @@ nav {
     padding:0px;
     border-width:0px;
 
-    width:16px;
-    height:16px;
+    width:18px;
+    height:18px;
 
     border-radius:50px;
 }
@@ -46,11 +48,20 @@ nav {
 .navbar__header-controls--green {
     background-color:rgba(137,233,121);
 }
+.navbar__header-controls--red:hover {
+    background-color:rgb(224, 105, 96);
+}
+.navbar__header-controls--yellow:hover {
+    background-color:rgb(212, 191, 82);
+}
+.navbar__header-controls--green:hover {
+    background-color:rgb(104, 204, 86);
+}
 .navbar__header-controls--three-dots__container {
     position:absolute;
     right:12px;
-    top:50%;
-    transform: translateY(-50%);
+    top:8px;
+    z-index: 10;
 
     padding:0px;
     border-width:0px;
@@ -62,7 +73,7 @@ nav {
     background-color: rgb(255, 255, 255);
 }
 .navbar__header-controls--three-dots__container:hover {
-    background-color: rgba(0, 0, 0, 0.123);
+    background-color: rgb(241, 241, 241);
 }
 .navbar__header-controls--three-dots-svg {
     width:100%;
@@ -102,12 +113,15 @@ nav {
 .navbar__section-title{
     color:rgb(154,154,154);
     padding-top:6px;
+    padding-left:2px;
+
+    font-size:14px;
 }
 
 .navbar__section__buttons-section {
     display:grid;
 
-    padding-top:16px;
+    padding-top:14px;
     padding-bottom:16px;
 }
 .navbar__section__buttons-section__button {
@@ -122,14 +136,14 @@ nav {
     width:100%;
 
     box-sizing: border-box;
-    padding-left:10px;
+    padding-left:16px;
     
 
     border-radius:15px;
     background-color: white;;
 }
 .navbar__section__buttons-section__button:hover{
-    background-color:rgb(236, 236, 236)
+    background-color:rgb(241, 241, 241)
 }
 .navbar__section__buttons-section__button-icon {
     width:20px;
@@ -137,7 +151,7 @@ nav {
 .navbar__section__buttons-section__button-text {
     text-align:left;
     font-family: 'IBM Plex Sans', sans-serif;
-    font-weight:400;
+    font-weight:500;
     font-size:16px;
     
     color:rgb(155, 155, 155);

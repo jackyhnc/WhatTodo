@@ -16,24 +16,8 @@ main {
     margin-right:64px;
 }
 
-.main-tasks-ui {
-    background-color:white;
-    max-width:100%;
-    height:184px;
-
-    border-radius:25px;
-    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
-
-    margin-bottom:64px;
-}
-
 .todos-tasks-ui {
-    background-color:white;
-    max-width:100%;
-    height:500px;
 
-    border-radius:25px;
-    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
 }
 
 .longterm-tasks-ui {

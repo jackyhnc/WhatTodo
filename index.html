@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="title.css">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="main-tasks.css">
+
 </head>
 <body>
     <header>
@@ -33,15 +35,15 @@
 
     <main>
         <nav>
+            <button class="navbar__header-controls--three-dots__container">
+                <img class="navbar__header-controls--three-dots-svg" src="images/three dots.svg">
+            </button>
             <div class="navbar__header-controls">
                 <div class="navbar__header-controls__sizing-buttons">
                     <button class="navbar__header-controls--red"></button>
                     <button class="navbar__header-controls--yellow"></button>
                     <button class="navbar__header-controls--green"></button>
                 </div>
-                <button class="navbar__header-controls--three-dots__container">
-                    <img class="navbar__header-controls--three-dots-svg" src="images/three dots.svg">
-                </button>
             </div>
             <div class="navbar__container">
                 <div class="navbar__profile-greeting-section">
@@ -93,13 +95,100 @@
         </nav>
         <div class="tasks-column__first">
             <div class="main-tasks-ui">
-
+                <button class="navbar__header-controls--three-dots__container">
+                    <img class="navbar__header-controls--three-dots-svg" src="images/three dots.svg">
+                </button>
+                <div class="main-tasks-ui__title">
+                    Today's Main Tasks
+                </div>
+                <img class="add-icon" src="images/add icon.svg"></img>
+                <div class="tasks-ui__names-container">
+                    <div class="tasks-ui__names-container--title">Title</div>
+                    <div class="tasks-ui__names-container--date">Date</div>
+                </div>
+                <div class="tasks-ui__todos-container">
+                    <div class="tasks-ui__todo">
+                        <div class="tasks-ui__todo__checkbox-container">
+                            <div class="tasks-ui__todo__checkbox"></div>
+                        </div>
+                        <div class="tasks-ui__todo__title">Complete reading the book</div>
+                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        <img class="tasks-ui__todo__delete-icon" src="images/delete icon.svg"></img>
+                    </div>
+                    <div class="tasks-ui__todo">
+                        <div class="tasks-ui__todo__checkbox-container">
+                            <div class="tasks-ui__todo__checkbox"></div>
+                        </div>
+                        <div class="tasks-ui__todo__title">Complete reading the book</div>
+                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        <img class="tasks-ui__todo__delete-icon" src="images/delete icon.svg"></img>
+                    </div>
+                </div>
             </div>
-            <div class="todos-tasks-ui"></div>
+            <div class="todos-tasks-ui">
+                <button class="navbar__header-controls--three-dots__container">
+                    <img class="navbar__header-controls--three-dots-svg" src="images/three dots.svg">
+                </button>
+                <div class="todos-tasks-ui__title">
+                    To Do's
+                </div>
+                <img class="add-icon" src="images/add icon.svg"></img>
+                <div class="tasks-ui__names-container">
+                    <div class="tasks-ui__names-container--title">Title</div>
+                    <div class="tasks-ui__names-container--date">Date</div>
+                </div>
+                <div class="tasks-ui__todos-container">
+                    <div class="tasks-ui__todo">
+                        <div class="tasks-ui__todo__checkbox-container">
+                            <div class="tasks-ui__todo__checkbox"></div>
+                        </div>
+                        <div class="tasks-ui__todo__title">Complete reading the book</div>
+                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        <img class="tasks-ui__todo__delete-icon" src="images/delete icon.svg"></img>
+                    </div>
+                    <div class="tasks-ui__todo">
+                        <div class="tasks-ui__todo__checkbox-container">
+                            <div class="tasks-ui__todo__checkbox"></div>
+                        </div>
+                        <div class="tasks-ui__todo__title">Complete reading the book</div>
+                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        <img class="tasks-ui__todo__delete-icon" src="images/delete icon.svg"></img>
+                    </div>
+                </div>
+            </div>
         </div>
-
         <div class="tasks-column__second">
-            <div class="longterm-tasks-ui"></div>
+            <div class="longterm-tasks-ui">
+                <button class="navbar__header-controls--three-dots__container">
+                    <img class="navbar__header-controls--three-dots-svg" src="images/three dots.svg">
+                </button>
+                <div class="longterm-tasks-ui__title">
+                    Long Term Tasks
+                </div>
+                <img class="add-icon" src="images/add icon.svg"></img>
+                <div class="tasks-ui__names-container">
+                    <div class="tasks-ui__names-container--title">Title</div>
+                    <div class="tasks-ui__names-container--date">Date</div>
+                </div>
+                <div class="tasks-ui__todos-container">
+                    <div class="tasks-ui__todo">
+                        <div class="tasks-ui__todo__checkbox-container">
+                            <div class="tasks-ui__todo__checkbox"></div>
+                        </div>
+                        <div class="tasks-ui__todo__title">Complete reading the book</div>
+                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        <img class="tasks-ui__todo__delete-icon" src="images/delete icon.svg"></img>
+                    </div>
+                    <div class="tasks-ui__todo">
+                        <div class="tasks-ui__todo__checkbox-container">
+                            <div class="tasks-ui__todo__checkbox"></div>
+                        </div>
+                        <div class="tasks-ui__todo__title">Complete reading the book</div>
+                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        <img class="tasks-ui__todo__delete-icon" src="images/delete icon.svg"></img>
+                    </div>
+                </div>
+            </div>
             <div class="gallery-container"></div>
         </div>
     </main>
