@@ -1,13 +1,56 @@
 header {
-    position:sticky;
-    top:0;
-    left:0;
-    background-color:white;
-    height: 36px;
+    height: 48px;
     width:100%;
 
+    background-color:white;
+    display:grid;
+    align-items:center;
+    grid-template-columns:0.25fr 5fr 0.2fr 0.25fr;
+
+    font-size:18px;  
+    font-weight:500;
+
+    position:fixed;
+    top:0;
+    left:0;
     z-index:99;
+
+    border-bottom-style: solid;
+    border-color:rgb(190, 190, 190);
+    border-bottom-width:1px;
 }
+.header__hamburger-icon {
+    margin:0 auto;
+
+    width:32px;
+    height:32px;
+
+    border-radius:10px;
+}
+.header__hamburger-icon:hover {
+    background-color:rgb(241, 241, 241);
+}
+.header__share-button {
+    font-size: 18px;
+
+    margin:0 auto;
+    padding-left:16px;
+    padding-right:16px;
+    padding-top:4px;
+    padding-bottom:4px;
+    border-radius:20px;
+}
+.header__share-button:hover {
+    background-color:rgb(241, 241, 241);
+}
+.header__profile-picture {
+    margin:0 auto;
+    border-radius:50px;
+
+    width:28px;
+    height:28px;
+}
+
 
 .title-container {
     position:relative;

@@ -7,6 +7,11 @@ nav {
 
     border-radius:25px;
     box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+
+    transition:box-shadow 0.3s ease;
+}
+nav:hover {
+    box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
 }
 .navbar__container {
     padding-left:32px;

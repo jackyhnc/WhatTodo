@@ -1,52 +1,32 @@
+.main-tasks-ui, .todos-tasks-ui, .longterm-tasks-ui {
+    position:relative;
+
+    background-color:white;
+    max-width:100%;
+    height:500px;
+
+    box-sizing:border-box;
+    padding-left:24px;
+    padding-top:14px;
+
+    border-radius:25px;
+    box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+    transition:box-shadow 0.3s ease;
+
+    margin-bottom:64px;
+}
 .main-tasks-ui {
-    position:relative;
-
-    background-color:white;
-    max-width:100%;
     height:184px;
-
-    box-sizing:border-box;
-    padding-left:24px;
-    padding-top:14px;
-
-    border-radius:25px;
-    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
-
-    margin-bottom:64px;
 }
-.todos-tasks-ui {
-    position:relative;
-
-    background-color:white;
-    max-width:100%;
-    height:500px;
-
-    box-sizing:border-box;
-    padding-left:24px;
-    padding-top:14px;
-
-    border-radius:25px;
-    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
-
-    margin-bottom:64px;
+.main-tasks-ui:hover {
+    box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
 }
-.longterm-tasks-ui {
-    position:relative;
-
-    background-color:white;
-    max-width:100%;
-    height:500px;
-
-    box-sizing:border-box;
-    padding-left:24px;
-    padding-top:14px;
-
-    border-radius:25px;
-    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
-
-    margin-bottom:64px;
+.todos-tasks-ui:hover {
+    box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
 }
-
+.longterm-tasks-ui:hover {
+    box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
+}
 
 .main-tasks-ui__title {
     margin:0;
@@ -100,7 +80,7 @@
     vertical-align:middle;
 }
 
-.add-icon{
+.main-tasks-ui__add-icon{
     width:20px;
 
     vertical-align:middle;
@@ -108,7 +88,29 @@
     opacity:0;
     transition: opacity 0.2s ease;
 }
-.main-tasks-ui:hover .add-icon {
+.main-tasks-ui:hover .main-tasks-ui__add-icon{
+    opacity:1;
+}
+.todos-tasks-ui__add-icon{
+    width:20px;
+
+    vertical-align:middle;
+    padding-left:12px;
+    opacity:0;
+    transition: opacity 0.2s ease;
+}
+.todos-tasks-ui:hover .todos-tasks-ui__add-icon{
+    opacity:1;
+}
+.longterm-tasks-ui__add-icon{
+    width:20px;
+
+    vertical-align:middle;
+    padding-left:12px;
+    opacity:0;
+    transition: opacity 0.2s ease;
+}
+.longterm-tasks-ui:hover .longterm-tasks-ui__add-icon{
     opacity:1;
 }
 

@@ -1,5 +1,5 @@
 body {
-    padding-top:40px;
+    padding-top:48px;
 
     margin:0;
     font-family: 'IBM Plex Sans', sans-serif;
@@ -9,6 +9,17 @@ body {
     height:3000px;
 }
 
-.p {
+p {
     margin:0;
+}
+
+button {
+    margin:0;
+    border-width:0px;
+    background-color: transparent;
+
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight:400;
+    font-size:16px;
+
 }
