@@ -80,17 +80,28 @@
     vertical-align:middle;
 }
 
+.main-tasks-ui__add-button {
+    border-radius: 50px;
+    padding-top:6px;
+    padding-bottom:6px;
+    transition:background-color 0.2s ease;
+
+    margin-left:12px;
+}
+.main-tasks-ui__add-button:hover {
+    background-color: rgb(241, 241, 241);
+}
 .main-tasks-ui__add-icon{
     width:20px;
 
     vertical-align:middle;
-    padding-left:12px;
     opacity:0;
     transition: opacity 0.2s ease;
 }
 .main-tasks-ui:hover .main-tasks-ui__add-icon{
     opacity:1;
 }
+
 .todos-tasks-ui__add-icon{
     width:20px;
 
@@ -102,6 +113,7 @@
 .todos-tasks-ui:hover .todos-tasks-ui__add-icon{
     opacity:1;
 }
+
 .longterm-tasks-ui__add-icon{
     width:20px;
 
@@ -173,8 +185,13 @@
 .tasks-ui__todo__title{
     display: flex;
     align-items: center;
+    border:0;
 
     font-weight:500;
+}
+.tasks-ui__todo__title:focus {
+    outline:0;
+
 }
 
 .tasks-ui__todo__date{
