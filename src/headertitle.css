@@ -30,15 +30,18 @@ header {
 .header__hamburger-icon:hover {
     background-color:rgb(241, 241, 241);
 }
+.header__title {
+    font-weight:500;
+}
 .header__share-button {
-    font-size: 18px;
-
     margin:0 auto;
     padding-left:16px;
     padding-right:16px;
     padding-top:4px;
     padding-bottom:4px;
     border-radius:20px;
+
+    font-weight: 500;
 }
 .header__share-button:hover {
     background-color:rgb(241, 241, 241);

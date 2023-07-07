@@ -4,12 +4,15 @@ import './headertitle.css'
 import './main.css'
 import './navbar.css'
 import './tasks-ui.css'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
 
-export default function App() {
+export default function Web() {
   const [mainTaskTodos, setMainTaskTodos] = useState([])
   const [mainTaskTodoValue, setMainTaskTodoValue] = useState("")
 
-  const addMainTaskTodos = () => {
+  const addMainTaskTodo = () => {
     if (mainTaskTodos.length < 2) {
         const mainTodo = {
             id: Date.now(),
@@ -17,6 +20,16 @@ export default function App() {
         }
         setMainTaskTodos([...mainTaskTodos,mainTodo])
     }
+  }
+
+  const deleteMainTaskTodo = (id) => {
+    const newMainTaskTodos = []
+    mainTaskTodos.map(todo => {
+        if (todo.id !== id) {
+            newMainTaskTodos.push(todo)
+        }
+    })
+    setMainTaskTodos(newMainTaskTodos)
   }
 
   /*updates the value of the todo that matches the id of the input experiencing onChange while creating a copy of existing todos then sets it*/
@@ -30,9 +43,10 @@ export default function App() {
 
   return (
     <>
+    <LocalizationProvider dateAdapter={AdapterDayjs}><DateCalendar /></LocalizationProvider>
       <header>
           <img className="header__hamburger-icon" src="/images/hamburger.svg" alt="Hamburger" />
-          <p>Summer 2023</p>
+          <div className="header__title">Summer 2023</div>
           <button class="header__share-button">Share</button>
           <img class="header__profile-picture" src="/images/profile.jpg"/>
       </header>
@@ -114,7 +128,7 @@ export default function App() {
                   <div class="main-tasks-ui__title">
                       Today's Main Tasks
                   </div>
-                  <button className="main-tasks-ui__add-button" onClick={addMainTaskTodos}>
+                  <button className="main-tasks-ui__add-button" onClick={addMainTaskTodo}>
                     <img class="main-tasks-ui__add-icon" src="/images/add icon.svg"></img>
                   </button>
                   <div class="tasks-ui__names-container">
@@ -124,20 +138,23 @@ export default function App() {
                   <div class="tasks-ui__todos-container">
                     {mainTaskTodos.map(mainTask => {
                         return (
-                            <div class="tasks-ui__todos-container" key={mainTask.id}>
-                                <div class="tasks-ui__todo">
-                                    <div class="tasks-ui__todo__checkbox-container">
-                                        <div class="tasks-ui__todo__checkbox"></div>
-                                    </div>
-                                    <input class="tasks-ui__todo__title" 
-                                    value={mainTask.name} 
-                                    onChange={(e) => handleMainTaskTodoChange(mainTask.id, e.target.value)} 
-                                    type="text" 
-                                    id="tasks-ui__todo__title-id">
-                                    </input>
-                                    <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
-                                    <img class="tasks-ui__todo__delete-icon" src="/images/delete icon.svg"></img>
+                            <div class="tasks-ui__todo" key={mainTask.id}>
+                                <div class="tasks-ui__todo__checkbox-container">
+                                    <div class="tasks-ui__todo__checkbox"></div>
                                 </div>
+
+                                <input class="tasks-ui__todo__title" 
+                                value={mainTask.name} 
+                                onChange={(e) => handleMainTaskTodoChange(mainTask.id, e.target.value)} 
+                                type="text" 
+                                id="tasks-ui__todo__title-id">
+                                </input>
+
+                                <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                                
+                                <button className="tasks-ui__todo__delete-button" onClick={e => deleteMainTaskTodo(mainTask.id)}>
+                                    <img class="tasks-ui__todo__delete-icon" src="/images/delete icon.svg"></img>
+                                </button>
                             </div>
                             )
                         })}
