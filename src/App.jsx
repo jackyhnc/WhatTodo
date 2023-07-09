@@ -8,38 +8,163 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
 
-export default function Web() {
-  const [mainTaskTodos, setMainTaskTodos] = useState([])
-  const [mainTaskTodoValue, setMainTaskTodoValue] = useState("")
-
-  const addMainTaskTodo = () => {
-    if (mainTaskTodos.length < 2) {
-        const mainTodo = {
-            id: Date.now(),
-            name:""
-        }
-        setMainTaskTodos([...mainTaskTodos,mainTodo])
+export function MainTodos() {
+    const [todos, setTodos] = useState([])
+    const [todoValue, setTodoValue] = useState("")
+  
+    const addTodo = () => {
+      if (todos.length < 2) {
+          const mainTodo = {
+              id: Date.now(),
+              name:""
+          }
+          setTodos([...todos,mainTodo])
+      }
     }
-  }
+  
+    const deleteTodo = (id) => {
+      const newTodos = []
+      todos.map(todo => {
+          if (todo.id !== id) {
+              newTodos.push(todo)
+          }
+      })
+      setTodos(newTodos)
+    }
+  
+    /*updates the value of the todo that matches the id of the input experiencing onChange while creating a copy of existing todos then sets it*/
+    /*returning ...todo preserves each todo's other values (like id)*/
+    const handleTodoChange = (id, value) => {
+      const newTodos = todos.map(todo => {
+          return todo.id === id ? {...todo, name:value} : todo
+      })
+      setTodos(newTodos)
+    }
 
-  const deleteMainTaskTodo = (id) => {
-    const newMainTaskTodos = []
-    mainTaskTodos.map(todo => {
-        if (todo.id !== id) {
-            newMainTaskTodos.push(todo)
-        }
-    })
-    setMainTaskTodos(newMainTaskTodos)
-  }
+    return (
+        <div class="main-tasks-ui">
+            <button class="navbar__header-controls--three-dots__container">
+                <img class="navbar__header-controls--three-dots-svg" src="/images/three dots.svg"/>
+            </button>
+            <div class="main-tasks-ui__title">
+                Today's Main Tasks
+            </div>
+            <button className="main-tasks-ui__add-button" onClick={addTodo}>
+            <img class="main-tasks-ui__add-icon" src="/images/add icon.svg"></img>
+            </button>
+            <div class="tasks-ui__names-container">
+                <div class="tasks-ui__names-container--title">Title</div>
+                <div class="tasks-ui__names-container--date">Date</div>
+            </div>
+            <div class="tasks-ui__todos-container">
+            {todos.map(todo => {
+                return (
+                    <div class="tasks-ui__todo" key={todo.id}>
+                        <div class="tasks-ui__todo__checkbox-container">
+                            <div class="tasks-ui__todo__checkbox"></div>
+                        </div>
 
-  /*updates the value of the todo that matches the id of the input experiencing onChange while creating a copy of existing todos then sets it*/
-  /*returning ...todo preserves each todo's other values (like id)*/
-  const handleMainTaskTodoChange = (id, value) => {
-    const newMainTaskTodos = mainTaskTodos.map(todo => {
-        return todo.id === id ? {...todo, name:value} : todo
-    })
-    setMainTaskTodos(newMainTaskTodos)
-  }
+                        <div className="tasks-ui__todo__title-container">
+                            <input class="tasks-ui__todo__title" 
+                            value={todo.name} 
+                            onChange={(e) => handleTodoChange(todo.id, e.target.value)} 
+                            type="text" 
+                            id="tasks-ui__todo__title-id">
+                            </input>
+                        </div>
+
+                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        
+                        <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
+                            <img class="tasks-ui__todo__delete-icon" src="/images/delete icon.svg"></img>
+                        </button>
+                    </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
+export function NormalTodos() {
+    const [todos, setTodos] = useState([])
+    const [todoValue, setTodoValue] = useState("")
+  
+    const addTodo = () => {
+      if (todos.length < 10) {
+          const mainTodo = {
+              id: Date.now(),
+              name:""
+          }
+          setTodos([...todos,mainTodo])
+      }
+    }
+  
+    const deleteTodo = (id) => {
+      const newTodos = []
+      todos.map(todo => {
+          if (todo.id !== id) {
+              newTodos.push(todo)
+          }
+      })
+      setTodos(newTodos)
+    }
+  
+    /*updates the value of the todo that matches the id of the input experiencing onChange while creating a copy of existing todos then sets it*/
+    /*returning ...todo preserves each todo's other values (like id)*/
+    const handleTodoChange = (id, value) => {
+      const newTodos = todos.map(todo => {
+          return todo.id === id ? {...todo, name:value} : todo
+      })
+      setTodos(newTodos)
+    }
+
+    return (
+        <div class="todos-tasks-ui">
+            <button class="navbar__header-controls--three-dots__container">
+                <img class="navbar__header-controls--three-dots-svg" src="/images/three dots.svg"/>
+            </button>
+            <div class="todos-tasks-ui__title">
+                To Do's
+            </div>
+            <button className="todos-tasks-ui__add-button" onClick={addTodo}>
+                <img class="todos-tasks-ui__add-icon" src="/images/add icon.svg"></img>
+            </button>
+            <div class="tasks-ui__names-container">
+                <div class="tasks-ui__names-container--title">Title</div>
+                <div class="tasks-ui__names-container--date">Date</div>
+            </div>
+            <div class="tasks-ui__todos-container">
+            {todos.map(todo => {
+                return (
+                    <div class="tasks-ui__todo" key={todo.id}>
+                        <div class="tasks-ui__todo__checkbox-container">
+                            <div class="tasks-ui__todo__checkbox"></div>
+                        </div>
+
+                        <div className="tasks-ui__todo__title-container">
+                            <input class="tasks-ui__todo__title" 
+                            value={todo.name} 
+                            onChange={(e) => handleTodoChange(todo.id, e.target.value)} 
+                            type="text" 
+                            id="tasks-ui__todo__title-id"
+                            autocomplete="off" >
+                            </input>
+                        </div>
+
+                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        
+                        <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
+                            asdfasdf<img class="tasks-ui__todo__delete-icon" src="/images/delete icon.svg"></img>
+                        </button>
+                    </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
+
+export default function App() {
 
   return (
     <>
@@ -118,79 +243,10 @@ export default function Web() {
                       </div>
                   </div>
               </div>
-
           </nav>
           <div class="tasks-column__first">
-              <div class="main-tasks-ui">
-                  <button class="navbar__header-controls--three-dots__container">
-                      <img class="navbar__header-controls--three-dots-svg" src="/images/three dots.svg"/>
-                  </button>
-                  <div class="main-tasks-ui__title">
-                      Today's Main Tasks
-                  </div>
-                  <button className="main-tasks-ui__add-button" onClick={addMainTaskTodo}>
-                    <img class="main-tasks-ui__add-icon" src="/images/add icon.svg"></img>
-                  </button>
-                  <div class="tasks-ui__names-container">
-                      <div class="tasks-ui__names-container--title">Title</div>
-                      <div class="tasks-ui__names-container--date">Date</div>
-                  </div>
-                  <div class="tasks-ui__todos-container">
-                    {mainTaskTodos.map(mainTask => {
-                        return (
-                            <div class="tasks-ui__todo" key={mainTask.id}>
-                                <div class="tasks-ui__todo__checkbox-container">
-                                    <div class="tasks-ui__todo__checkbox"></div>
-                                </div>
-
-                                <input class="tasks-ui__todo__title" 
-                                value={mainTask.name} 
-                                onChange={(e) => handleMainTaskTodoChange(mainTask.id, e.target.value)} 
-                                type="text" 
-                                id="tasks-ui__todo__title-id">
-                                </input>
-
-                                <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
-                                
-                                <button className="tasks-ui__todo__delete-button" onClick={e => deleteMainTaskTodo(mainTask.id)}>
-                                    <img class="tasks-ui__todo__delete-icon" src="/images/delete icon.svg"></img>
-                                </button>
-                            </div>
-                            )
-                        })}
-                  </div>
-              </div>
-              <div class="todos-tasks-ui">
-                  <button class="navbar__header-controls--three-dots__container">
-                      <img class="navbar__header-controls--three-dots-svg" src="/images/three dots.svg"/>
-                  </button>
-                  <div class="todos-tasks-ui__title">
-                      To Do's
-                  </div>
-                  <img class="todos-tasks-ui__add-icon" src="/images/add icon.svg"></img>
-                  <div class="tasks-ui__names-container">
-                      <div class="tasks-ui__names-container--title">Title</div>
-                      <div class="tasks-ui__names-container--date">Date</div>
-                  </div>
-                  <div class="tasks-ui__todos-container">
-                      <div class="tasks-ui__todo">
-                          <div class="tasks-ui__todo__checkbox-container">
-                              <div class="tasks-ui__todo__checkbox"></div>
-                          </div>
-                          <div class="tasks-ui__todo__title">Complete reading the book</div>
-                          <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
-                          <img class="tasks-ui__todo__delete-icon" src="/images/delete icon.svg"></img>
-                      </div>
-                      <div class="tasks-ui__todo">
-                          <div class="tasks-ui__todo__checkbox-container">
-                              <div class="tasks-ui__todo__checkbox"></div>
-                          </div>
-                          <div class="tasks-ui__todo__title">Complete reading the book</div>
-                          <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
-                          <img class="tasks-ui__todo__delete-icon" src="/images/delete icon.svg"></img>
-                      </div>
-                  </div>
-              </div>
+              <MainTodos />
+              <NormalTodos />
           </div>
           <div class="tasks-column__second">
               <div class="longterm-tasks-ui">

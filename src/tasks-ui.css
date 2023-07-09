@@ -3,7 +3,7 @@
 
     background-color:white;
     max-width:100%;
-    height:500px;
+    height:476px;
 
     box-sizing:border-box;
     padding-left:24px;
@@ -102,11 +102,21 @@
     opacity:1;
 }
 
+.todos-tasks-ui__add-button {
+    border-radius: 50px;
+    padding-top:6px;
+    padding-bottom:6px;
+    transition:background-color 0.2s ease;
+
+    margin-left:12px;
+}
+.todos-tasks-ui__add-button:hover {
+    background-color: rgb(241, 241, 241);
+}
 .todos-tasks-ui__add-icon{
     width:20px;
 
     vertical-align:middle;
-    padding-left:12px;
     opacity:0;
     transition: opacity 0.2s ease;
 }
@@ -162,9 +172,8 @@
 
     width:100%;
     height:36px;
-
     align-items: center;
-    justify-content: center;
+
 }
 
 .tasks-ui__todo__checkbox-container{
@@ -182,16 +191,33 @@
     box-shadow: inset -5px 5px 5px -5px rgba(0, 0, 0, 0.25);
 }
 
+.tasks-ui__todo__title-container {
+    position: relative;
+}
 .tasks-ui__todo__title{
     display: flex;
-    align-items: center;
+    align-self: center;
     border:0;
 
     font-weight:500;
+
+    transition:box-shadow 0.2s ease;
+    transition: padding 0.2s ease;
 }
 .tasks-ui__todo__title:focus {
-    outline:0;
+    position: absolute;
+    left:0px;
+    top:50%;
+    transform: translateY(-50%);
 
+    outline:0;
+    box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+    border-radius:4px;
+    caret-color:black;
+
+    font-size:20px;
+
+    padding:8px 0px 8px 8px;
 }
 
 .tasks-ui__todo__date{
@@ -199,6 +225,9 @@
     align-items: center;
 }
 
+.tasks-ui__todo__delete-button {
+    background-color: grey;
+}
 .tasks-ui__todo__delete-icon {
     width:20px;
     height:20px;
