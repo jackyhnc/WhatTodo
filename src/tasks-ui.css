@@ -214,27 +214,58 @@
     box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
     border-radius:4px;
     caret-color:black;
+    z-index:100;
 
     font-size:20px;
 
     padding:8px 0px 8px 8px;
 }
 
+.tasks-ui__todo__date-container{
+    position:relative;
+    height:100%;
+}
 .tasks-ui__todo__date{
     display: flex;
     align-items: center;
+    height:100%;
+}
+.tasks-ui__todo__date-calendar-false{
+    display: none !important;
+}
+.tasks-ui__todo__date-calendar-true{
+    position:absolute;
+    left:-15px;
+    bottom:0;
+    z-index: 100;
+
+    background-color: rgb(247, 251, 255);
+    box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+    border-radius: 15px;
+
+    transition: box-shadow 0.2s ease;
+}
+.tasks-ui__todo__date-calendar-true:hover{
+    box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
 }
 
 .tasks-ui__todo__delete-button {
-    background-color: grey;
+    border-radius: 50px;
+    width:32px;
+    padding:6px;
+    transition:background-color 0.2s ease;
 }
-.tasks-ui__todo__delete-icon {
+.tasks-ui__todo__delete-button:hover {
+    background-color: rgb(241, 241, 241);
+}
+.tasks-ui__todo__delete-icon{
     width:20px;
-    height:20px;
 
-    opacity: 0;
+    vertical-align:middle;
+    opacity:0;
     transition: opacity 0.2s ease;
 }
 .tasks-ui__todos-container:hover .tasks-ui__todo__delete-icon {
     opacity: 1;
 }
+

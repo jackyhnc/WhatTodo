@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './general.css'
 import './headertitle.css'
 import './main.css'
@@ -6,17 +6,37 @@ import './navbar.css'
 import './tasks-ui.css'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
+
+export function MyDateCalendar() {
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    console.log('Selected date:', date); // Log the selected date
+  };
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DateCalendar
+        value={selectedDate}
+        onChange={handleDateChange}
+      />
+      {selectedDate && <p>Selected date: {selectedDate.format('dddd, MMM D, YYYY')}</p>}
+    </LocalizationProvider>
+  );
+}
 
 export function MainTodos() {
     const [todos, setTodos] = useState([])
-    const [todoValue, setTodoValue] = useState("")
   
     const addTodo = () => {
       if (todos.length < 2) {
           const mainTodo = {
               id: Date.now(),
-              name:""
+              name:"",
+              showTodoCalendarState:false,
+              date:""
           }
           setTodos([...todos,mainTodo])
       }
@@ -32,13 +52,51 @@ export function MainTodos() {
       setTodos(newTodos)
     }
   
-    /*updates the value of the todo that matches the id of the input experiencing onChange while creating a copy of existing todos then sets it*/
-    /*returning ...todo preserves each todo's other values (like id)*/
     const handleTodoChange = (id, value) => {
       const newTodos = todos.map(todo => {
           return todo.id === id ? {...todo, name:value} : todo
       })
       setTodos(newTodos)
+    }
+
+    const showTodoCalendar = (id) => {
+        const newTodos = todos.map(todo => {
+            return todo.id === id ? {...todo, showTodoCalendarState:!todo.showTodoCalendarState} : todo
+        })
+        setTodos(newTodos)
+    }
+
+    /* deletes calendar popup after clicking away */
+    const todoCalendarRef = useRef()
+    useEffect(() => {
+        let handler = (e) => {
+            if (!todoCalendarRef.current.contains(e.target)) {
+                const newTodos = todos.map(todo => {
+                    return {...todo, showTodoCalendarState:false}
+                })
+                setTodos(newTodos)
+            }
+        }
+
+        document.addEventListener("mousedown",handler)
+
+        return() => {
+            document.removeEventListener("mousedown",handler)
+        }
+
+    })
+
+    const handleTodoDateChange = (id,value) => {
+        const newTodos = todos.map(todo => {
+            return todo.id === id ? {...todo, date:value.format('dddd, MMM D, YYYY')} : todo
+        })
+        setTodos(newTodos)
+    }
+
+    const exitOnEnter = (e) => {
+        if (e.key === 'Enter') {
+            e.target.blur()
+        }
     }
 
     return (
@@ -50,7 +108,7 @@ export function MainTodos() {
                 Today's Main Tasks
             </div>
             <button className="main-tasks-ui__add-button" onClick={addTodo}>
-            <img class="main-tasks-ui__add-icon" src="/images/add icon.svg"></img>
+                <img class="main-tasks-ui__add-icon" src="/images/add icon.svg"></img>
             </button>
             <div class="tasks-ui__names-container">
                 <div class="tasks-ui__names-container--title">Title</div>
@@ -67,13 +125,25 @@ export function MainTodos() {
                         <div className="tasks-ui__todo__title-container">
                             <input class="tasks-ui__todo__title" 
                             value={todo.name} 
-                            onChange={(e) => handleTodoChange(todo.id, e.target.value)} 
+                            onChange={(e) => handleTodoChange(todo.id, e.target.value)}
+                            onKeyDown={exitOnEnter}
                             type="text" 
-                            id="tasks-ui__todo__title-id">
+                            id="tasks-ui__todo__title-id"
+                            autoComplete="off">
                             </input>
                         </div>
 
-                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        <div className="tasks-ui__todo__date-container" ref={todoCalendarRef} >
+                            <div class="tasks-ui__todo__date" onClick={e => showTodoCalendar(todo.id)}>{todo.date}</div>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <StaticDatePicker 
+                                className={`tasks-ui__todo__date-calendar-${todo.showTodoCalendarState? "true" : "false"}`}
+                                onChange={value => handleTodoDateChange(todo.id,value)}
+                                slotProps={{actionBar: {actions: []}}}
+                                />
+                            </LocalizationProvider>
+                        </div>
+
                         
                         <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
                             <img class="tasks-ui__todo__delete-icon" src="/images/delete icon.svg"></img>
@@ -168,7 +238,6 @@ export default function App() {
 
   return (
     <>
-    <LocalizationProvider dateAdapter={AdapterDayjs}><DateCalendar /></LocalizationProvider>
       <header>
           <img className="header__hamburger-icon" src="/images/hamburger.svg" alt="Hamburger" />
           <div className="header__title">Summer 2023</div>
