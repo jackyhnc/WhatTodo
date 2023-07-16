@@ -1,0 +1,21 @@
+.tasks-ui__options-menu {
+    position: absolute;
+    top:-150px;
+    right:0;
+
+    width:200px;
+    height:200px;
+
+    background-color: rgb(255, 255, 255);
+    border-radius:20px;
+    box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+
+}
+.tasks-ui__options-menu__button {
+    width:200px;
+    height:80px;
+
+    background-color: rgb(209, 209, 209);
+    border-radius:20px;
+    
+}

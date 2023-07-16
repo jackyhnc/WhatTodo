@@ -231,7 +231,8 @@
     height:100%;
 }
 .tasks-ui__todo__date-calendar-false{
-    display: none !important;
+    position:absolute;
+    opacity:0;
 }
 .tasks-ui__todo__date-calendar-true{
     position:absolute;
@@ -242,8 +243,9 @@
     background-color: rgb(247, 251, 255);
     box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
     border-radius: 15px;
+    opacity:1;
 
-    transition: box-shadow 0.2s ease;
+    transition:0.2s ease;
 }
 .tasks-ui__todo__date-calendar-true:hover{
     box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
@@ -268,4 +270,3 @@
 .tasks-ui__todos-container:hover .tasks-ui__todo__delete-icon {
     opacity: 1;
 }
-

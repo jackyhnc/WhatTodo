@@ -4,31 +4,41 @@ import './headertitle.css'
 import './main.css'
 import './navbar.css'
 import './tasks-ui.css'
+import './tasks-ui__options-menu.css'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
 
-export function MyDateCalendar() {
-  const [selectedDate, setSelectedDate] = useState(null);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    console.log('Selected date:', date); // Log the selected date
-  };
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DateCalendar
-        value={selectedDate}
-        onChange={handleDateChange}
-      />
-      {selectedDate && <p>Selected date: {selectedDate.format('dddd, MMM D, YYYY')}</p>}
-    </LocalizationProvider>
-  );
+export function TasksUIOptionsMenu(props) {
+    const {checkedTodos} = props
+    let showTasksHistory = false
+    console.log("option menu")
+    return (
+        <>
+            <div className="tasks-ui__options-menu">
+                <div className="tasks-ui__options-menu__button" onClick={showTasksHistory = !showTasksHistory}>Tasks History</div>
+            </div>
+            {showTasksHistory && <TasksHistory/>}
+        </>
+    )
+    
+    function TasksHistory() {
+        return (
+            <div className="tasks-history-container">
+                {checkedTodos.map(checkedTodo => {
+                    return (
+                        <div className="tasks-history-container__checkedTodo">{checkedTodo.name}</div>
+                    )
+                })}
+            </div>
+        )
+    }
 }
 
 export function MainTodos() {
     const [todos, setTodos] = useState([])
+
     const addTodo = () => {
       if (todos.length < 2) {
           const mainTodo = {
@@ -55,6 +65,12 @@ export function MainTodos() {
       })
       setTodos(newTodos)
     }
+    const exitOnEnter = (e) => {
+        if (e.key === 'Enter') {
+            e.target.blur()
+        }
+    }
+
     const showTodoCalendar = (id) => {
         const newTodos = todos.map(todo => {
             return todo.id === id ? {...todo, showTodoCalendarState:!todo.showTodoCalendarState} : todo
@@ -67,6 +83,7 @@ export function MainTodos() {
         })
         setTodos(newTodos)
     }
+    // removes calendar when click is outside
     useEffect(() => {
         const handleClickOutsideTodoCalendar = (event) => {
             const allCalendars = document.querySelectorAll('.tasks-ui__todo__date-calendar-true')
@@ -89,6 +106,21 @@ export function MainTodos() {
 
         return () => {window.removeEventListener('click',handleClickOutsideTodoCalendar)}
     },[todos.map(todo => {return todo.showTodoCalendarState})])
+    // remove calendar when enter key is clicked
+    useEffect(() => {
+        const handleEnterKey = (event) => {
+            if (event.key === "Enter") {
+                const newTodos = todos.map(todo => {
+                    return {...todo,showTodoCalendarState:false}
+                })
+                setTodos(newTodos)
+            }
+        }
+
+        window.addEventListener("keydown",handleEnterKey)
+
+        return () => {window.removeEventListener("keydown",handleEnterKey)}
+    },[todos.map(todo => {return todo.showTodoCalendarState})])
 
     const [checkedTodos,setCheckedTodos] = useState([])
     const checkTodo = (id) => {
@@ -102,18 +134,17 @@ export function MainTodos() {
         })
         setTodos(newTodos)
     }
-
-    const exitOnEnter = (e) => {
-        if (e.key === 'Enter') {
-            e.target.blur()
-        }
+    const [showOptionsMenuState,setShowOptionsMenuState] = useState(false)
+    const showOptionsMenu = () => {
+        setShowOptionsMenuState(!showOptionsMenuState)
     }
 
     return (
         <div class="main-tasks-ui">
-            <button class="navbar__header-controls--three-dots__container">
+            <button class="navbar__header-controls--three-dots__container" onClick={showOptionsMenu}>
                 <img class="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
             </button>
+            {showOptionsMenuState && <TasksUIOptionsMenu checkedTodos={checkedTodos} />}
             <div class="main-tasks-ui__title">
                 Today's Main Tasks
             </div>
@@ -138,7 +169,6 @@ export function MainTodos() {
                             onChange={(e) => handleTodoChange(todo.id, e.target.value)}
                             onKeyDown={exitOnEnter}
                             type="text" 
-                            id="tasks-ui__todo__title-id"
                             autoComplete="off">
                             </input>
                         </div>
