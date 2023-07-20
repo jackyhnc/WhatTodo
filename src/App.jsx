@@ -11,29 +11,50 @@ import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
 
 
 export function TasksUIOptionsMenu(props) {
-    const {checkedTodos} = props
-    let showTasksHistory = false
-    console.log("option menu")
-    return (
-        <>
-            <div className="tasks-ui__options-menu">
-                <div className="tasks-ui__options-menu__button" onClick={showTasksHistory = !showTasksHistory}>Tasks History</div>
-            </div>
-            {showTasksHistory && <TasksHistory/>}
-        </>
-    )
-    
-    function TasksHistory() {
+    const {checkedTodos,showOptionsMenuState,setShowOptionsMenuState} = props
+    const [showCheckedTasksHistoryState,setShowCheckedTasksHistoryState] = useState(false)
+    const optionsMenuRef = useRef(null)
+    const checkedTasksHistoryRoot = useRef(null)
+
+    useEffect(() => {
+        const handleClickOutsideOptionsMenu = (event) => {
+            const optionsMenu = document.querySelector(".tasks-ui__options-menu")
+            const insideOptionsMenu = optionsMenu.querySelectorAll("*")
+
+            if (!(optionsMenuRef.current.contains(event.target) || checkedTasksHistoryRoot.current.contains(event.target))) {
+                setShowOptionsMenuState(!showOptionsMenuState)
+            }
+        }
+
+        window.addEventListener("click",handleClickOutsideOptionsMenu)
+        return () => {
+            window.removeEventListener("click",handleClickOutsideOptionsMenu)
+        }
+    })
+
+    const showCheckedTasksHistory = () => {
+        setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
+    }
+    function CheckedTasksHistory() {
         return (
-            <div className="tasks-history-container">
+            <div className="checked-tasks-history-container" ref={checkedTasksHistoryRoot}>
                 {checkedTodos.map(checkedTodo => {
                     return (
-                        <div className="tasks-history-container__checkedTodo">{checkedTodo.name}</div>
+                        <div className="checked-tasks-history-container__checkedTodo">{checkedTodo.name}</div>
                     )
                 })}
             </div>
         )
     }
+
+    return (
+        <>
+            <div className="tasks-ui__options-menu" ref={optionsMenuRef}>
+                <div className="tasks-ui__options-menu__button" onClick={showCheckedTasksHistory}>Tasks History</div>
+            </div>
+            {showCheckedTasksHistoryState && <CheckedTasksHistory/>}
+        </>
+    )
 }
 
 export function MainTodos() {
@@ -140,31 +161,32 @@ export function MainTodos() {
     }
 
     return (
-        <div class="main-tasks-ui">
-            <button class="navbar__header-controls--three-dots__container" onClick={showOptionsMenu}>
-                <img class="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
+        <div className="main-tasks-ui">
+            <button className="navbar__header-controls--three-dots__container" onClick={showOptionsMenu}>
+                <img className="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
             </button>
-            {showOptionsMenuState && <TasksUIOptionsMenu checkedTodos={checkedTodos} />}
-            <div class="main-tasks-ui__title">
+            {showOptionsMenuState && <TasksUIOptionsMenu checkedTodos={checkedTodos} showOptionsMenuState={showOptionsMenuState} setShowOptionsMenuState={setShowOptionsMenuState} />}
+            <div className="main-tasks-ui__title">
                 Today's Main Tasks
             </div>
             <button className="main-tasks-ui__add-button" onClick={addTodo}>
-                <img class="main-tasks-ui__add-icon" src="/WhatTodo/add icon.svg"></img>
+                <img className="main-tasks-ui__add-icon" src="/WhatTodo/add icon.svg"></img>
             </button>
-            <div class="tasks-ui__names-container">
-                <div class="tasks-ui__names-container--title">Title</div>
-                <div class="tasks-ui__names-container--date">Date</div>
+            <div className="tasks-ui__names-container">
+                
+                <div className="tasks-ui__names-container--title">Title</div>
+                <div className="tasks-ui__names-container--date">Date</div>
             </div>
-            <div class="tasks-ui__todos-container">
+            <div className="tasks-ui__todos-container">
             {todos.map(todo => {
                 return (
-                    <div class="tasks-ui__todo" key={todo.id}>
-                        <div class="tasks-ui__todo__checkbox-container" onClick={e => checkTodo(todo.id)}>
-                            <div class="tasks-ui__todo__checkbox"></div>
+                    <div className="tasks-ui__todo" key={todo.id}>
+                        <div className="tasks-ui__todo__checkbox-container" onClick={e => checkTodo(todo.id)}>
+                            <div className="tasks-ui__todo__checkbox"></div>
                         </div>
 
                         <div className="tasks-ui__todo__title-container">
-                            <input class="tasks-ui__todo__title" 
+                            <input className="tasks-ui__todo__title" 
                             value={todo.name} 
                             onChange={(e) => handleTodoChange(todo.id, e.target.value)}
                             onKeyDown={exitOnEnter}
@@ -174,7 +196,7 @@ export function MainTodos() {
                         </div>
 
                         <div className="tasks-ui__todo__date-container">
-                            <div class="tasks-ui__todo__date" onClick={e => showTodoCalendar(todo.id)}>{todo.date}</div>
+                            <div className="tasks-ui__todo__date" onClick={e => showTodoCalendar(todo.id)}>{todo.date}</div>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <StaticDatePicker 
                                 className={`tasks-ui__todo__date-calendar-${todo.showTodoCalendarState? "true" : "false"}`}
@@ -186,7 +208,7 @@ export function MainTodos() {
                         </div>
 
                         <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
-                            <img class="tasks-ui__todo__delete-icon" src="/WhatTodo/delete icon.svg"></img>
+                            <img className="tasks-ui__todo__delete-icon" src="/WhatTodo/delete icon.svg"></img>
                         </button>
                     </div>
                     )
@@ -195,6 +217,7 @@ export function MainTodos() {
         </div>
     )
 }
+
 export function NormalTodos() {
     const [todos, setTodos] = useState([])
     const [todoValue, setTodoValue] = useState("")
@@ -229,30 +252,30 @@ export function NormalTodos() {
     }
 
     return (
-        <div class="todos-tasks-ui">
-            <button class="navbar__header-controls--three-dots__container">
-                <img class="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
+        <div className="todos-tasks-ui">
+            <button className="navbar__header-controls--three-dots__container">
+                <img className="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
             </button>
-            <div class="todos-tasks-ui__title">
+            <div className="todos-tasks-ui__title">
                 To Do's
             </div>
             <button className="todos-tasks-ui__add-button" onClick={addTodo}>
-                <img class="todos-tasks-ui__add-icon" src="/WhatTodo/add icon.svg"></img>
+                <img className="todos-tasks-ui__add-icon" src="/WhatTodo/add icon.svg"></img>
             </button>
-            <div class="tasks-ui__names-container">
-                <div class="tasks-ui__names-container--title">Title</div>
-                <div class="tasks-ui__names-container--date">Date</div>
+            <div className="tasks-ui__names-container">
+                <div className="tasks-ui__names-container--title">Title</div>
+                <div className="tasks-ui__names-container--date">Date</div>
             </div>
-            <div class="tasks-ui__todos-container">
+            <div className="tasks-ui__todos-container">
             {todos.map(todo => {
                 return (
-                    <div class="tasks-ui__todo" key={todo.id}>
-                        <div class="tasks-ui__todo__checkbox-container">
-                            <div class="tasks-ui__todo__checkbox"></div>
+                    <div className="tasks-ui__todo" key={todo.id}>
+                        <div className="tasks-ui__todo__checkbox-container">
+                            <div className="tasks-ui__todo__checkbox"></div>
                         </div>
 
                         <div className="tasks-ui__todo__title-container">
-                            <input class="tasks-ui__todo__title" 
+                            <input className="tasks-ui__todo__title" 
                             value={todo.name} 
                             onChange={(e) => handleTodoChange(todo.id, e.target.value)} 
                             type="text" 
@@ -261,10 +284,10 @@ export function NormalTodos() {
                             </input>
                         </div>
 
-                        <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                        <div className="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
                         
                         <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
-                            asdfasdf<img class="tasks-ui__todo__delete-icon" src="/WhatTodo/delete icon.svg"></img>
+                            asdfasdf<img className="tasks-ui__todo__delete-icon" src="/WhatTodo/delete icon.svg"></img>
                         </button>
                     </div>
                     )
@@ -281,115 +304,116 @@ export default function App() {
       <header>
           <img className="header__hamburger-icon" src="/WhatTodo/hamburger.svg" alt="Hamburger" />
           <div className="header__title">Summer 2023</div>
-          <button class="header__share-button">Share</button>
-          <img class="header__profile-picture" src="/WhatTodo/profile.jpg"/>
+          <button className="header__share-button">Share</button>
+          <img className="header__profile-picture" src="/WhatTodo/profile.jpg"/>
       </header>
-      <div class="title-container">
-          <div class="wallpaper-image__gradient"></div>
-          <img class="wallpaper-image" src="/WhatTodo/b64aa1258b6197b2fd037b6dab551aad.png"/>
+      <div className="title-container">
+          <div className="wallpaper-image__gradient"></div>
+          <img className="wallpaper-image" src="/WhatTodo/b64aa1258b6197b2fd037b6dab551aad.png"/>
           <h1>Summer 2023</h1>
       </div>
-      <div class="quote-container">
-          <p class="quote-container__quote">“Opportunities don't happen, you create them.”</p>
-          <p class="quote-container__cite"> — Chris Grosser</p>
+      <div className="quote-container">
+          <p className="quote-container__quote">“Opportunities don't happen, you create them.”</p>
+          <p className="quote-container__cite"> — Chris Grosser</p>
       </div>
 
       <main>
           <nav>
-              <button class="navbar__header-controls--three-dots__container">
-                  <img class="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
+              <button className="navbar__header-controls--three-dots__container">
+                  <img className="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
               </button>
-              <div class="navbar__header-controls">
-                  <div class="navbar__header-controls__sizing-buttons">
-                      <button class="navbar__header-controls--red"></button>
-                      <button class="navbar__header-controls--yellow"></button>
-                      <button class="navbar__header-controls--green"></button>
+              <div className="navbar__header-controls">
+                  <div className="navbar__header-controls__sizing-buttons">
+                      <button className="navbar__header-controls--red"></button>
+                      <button className="navbar__header-controls--yellow"></button>
+                      <button className="navbar__header-controls--green"></button>
                   </div>
               </div>
-              <div class="navbar__container">
-                  <div class="navbar__profile-greeting-section">
-                      <div class="navbar__profile-greeting-container">
-                          <img class="navbar__profile-image" src="/WhatTodo/profile.jpg"/>
-                          <div class="navbar__greeting">Hey, Joe!</div>
+              <div className="navbar__container">
+                  <div className="navbar__profile-greeting-section">
+                      <div className="navbar__profile-greeting-container">
+                          <img className="navbar__profile-image" src="/WhatTodo/profile.jpg"/>
+                          <div className="navbar__greeting">Hey, Joe!</div>
                       </div> 
                   </div>
-                  <div class="navbar__section">
-                      <div class="navbar__section-title">Menu</div>
-                      <div class="navbar__section__buttons-section">
-                          <button class="navbar__section__buttons-section__button">
-                              <img class="navbar__section__buttons-section__button-icon" src="/WhatTodo/profile icon.svg"/>
-                              <div class="navbar__section__buttons-section__button-text">Profile</div>
+                  <div className="navbar__section">
+                      <div className="navbar__section-title">Menu</div>
+                      <div className="navbar__section__buttons-section">
+                          <button className="navbar__section__buttons-section__button">
+                              <img className="navbar__section__buttons-section__button-icon" src="/WhatTodo/profile icon.svg"/>
+                              <div className="navbar__section__buttons-section__button-text">Profile</div>
                           </button>
-                          <button class="navbar__section__buttons-section__button">
-                              <img class="navbar__section__buttons-section__button-icon" src="/WhatTodo/inbox.svg"/>
-                              <div class="navbar__section__buttons-section__button-text">Inbox</div>
+                          <button className="navbar__section__buttons-section__button">
+                              <img className="navbar__section__buttons-section__button-icon" src="/WhatTodo/inbox.svg"/>
+                              <div className="navbar__section__buttons-section__button-text">Inbox</div>
                           </button>
-                          <button class="navbar__section__buttons-section__button">
-                              <img class="navbar__section__buttons-section__button-icon" src="/WhatTodo/search.svg"/>
-                              <div class="navbar__section__buttons-section__button-text">Search</div>
+                          <button className="navbar__section__buttons-section__button">
+                              <img className="navbar__section__buttons-section__button-icon" src="/WhatTodo/search.svg"/>
+                              <div className="navbar__section__buttons-section__button-text">Search</div>
                           </button>
                       </div>
                   </div>
-                  <div class="navbar__section">
-                      <div class="navbar__section-title">Configuration</div>
-                      <div class="navbar__section__buttons-section">
-                          <button class="navbar__section__buttons-section__button">
-                              <img class="navbar__section__buttons-section__button-icon" src="/WhatTodo/new page.svg"/>
-                              <div class="navbar__section__buttons-section__button-text">New Page</div>
+                  <div className="navbar__section">
+                      <div className="navbar__section-title">Configuration</div>
+                      <div className="navbar__section__buttons-section">
+                          <button className="navbar__section__buttons-section__button">
+                              <img className="navbar__section__buttons-section__button-icon" src="/WhatTodo/new page.svg"/>
+                              <div className="navbar__section__buttons-section__button-text">New Page</div>
                           </button>
-                          <button class="navbar__section__buttons-section__button">
-                              <img class="navbar__section__buttons-section__button-icon" src="/WhatTodo/edit page.svg"/>
-                              <div class="navbar__section__buttons-section__button-text">Edit Page</div>
+                          <button className="navbar__section__buttons-section__button">
+                              <img className="navbar__section__buttons-section__button-icon" src="/WhatTodo/edit page.svg"/>
+                              <div className="navbar__section__buttons-section__button-text">Edit Page</div>
                           </button>
-                          <button class="navbar__section__buttons-section__button">
-                              <img class="navbar__section__buttons-section__button-icon" src="/WhatTodo/settings.svg"/>
-                              <div class="navbar__section__buttons-section__button-text">Settings</div>
+                          <button className="navbar__section__buttons-section__button">
+                              <img className="navbar__section__buttons-section__button-icon" src="/WhatTodo/settings.svg"/>
+                              <div className="navbar__section__buttons-section__button-text">Settings</div>
                           </button>
-                          <button class="navbar__section__buttons-section__button">
-                              <img class="navbar__section__buttons-section__button-icon" src="/WhatTodo/updates.svg"/>
-                              <div class="navbar__section__buttons-section__button-text">Updates</div>
+                          <button className="navbar__section__buttons-section__button">
+                              <img className="navbar__section__buttons-section__button-icon" src="/WhatTodo/updates.svg"/>
+                              <div className="navbar__section__buttons-section__button-text">Updates</div>
                           </button>
                       </div>
                   </div>
               </div>
           </nav>
-          <div class="tasks-column__first">
+          <div className="tasks-column__first">
               <MainTodos />
               <NormalTodos />
+              <MainTodos />
           </div>
-          <div class="tasks-column__second">
-              <div class="longterm-tasks-ui">
-                  <button class="navbar__header-controls--three-dots__container">
-                      <img class="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
+          <div className="tasks-column__second">
+              <div className="longterm-tasks-ui">
+                  <button className="navbar__header-controls--three-dots__container">
+                      <img className="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
                   </button>
-                  <div class="longterm-tasks-ui__title">
+                  <div className="longterm-tasks-ui__title">
                       Long Term Tasks
                   </div>
-                  <img class="longterm-tasks-ui__add-icon" src="/WhatTodo/add icon.svg"></img>
-                  <div class="tasks-ui__names-container">
-                      <div class="tasks-ui__names-container--title">Title</div>
-                      <div class="tasks-ui__names-container--date">Date</div>
+                  <img className="longterm-tasks-ui__add-icon" src="/WhatTodo/add icon.svg"></img>
+                  <div className="tasks-ui__names-container">
+                      <div className="tasks-ui__names-container--title">Title</div>
+                      <div className="tasks-ui__names-container--date">Date</div>
                   </div>
-                  <div class="tasks-ui__todos-container">
-                      <div class="tasks-ui__todo">
-                          <div class="tasks-ui__todo__checkbox-container">
-                              <div class="tasks-ui__todo__checkbox"></div>
+                  <div className="tasks-ui__todos-container">
+                      <div className="tasks-ui__todo">
+                          <div className="tasks-ui__todo__checkbox-container">
+                              <div className="tasks-ui__todo__checkbox"></div>
                           </div>
-                          <div class="tasks-ui__todo__title">Complete reading the book</div>
-                          <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
-                          <img class="tasks-ui__todo__delete-icon" src="/WhatTodo/delete icon.svg"></img>
+                          <div className="tasks-ui__todo__title">Complete reading the book</div>
+                          <div className="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                          <img className="tasks-ui__todo__delete-icon" src="/WhatTodo/delete icon.svg"></img>
                       </div>
-                      <div class="tasks-ui__todo">
-                          <div class="tasks-ui__todo__checkbox-container">
-                              <div class="tasks-ui__todo__checkbox"></div>
+                      <div className="tasks-ui__todo">
+                          <div className="tasks-ui__todo__checkbox-container">
+                              <div className="tasks-ui__todo__checkbox"></div>
                           </div>
-                          <div class="tasks-ui__todo__title">Complete reading the book</div>
-                          <div class="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
-                          <img class="tasks-ui__todo__delete-icon" src="/WhatTodo/delete icon.svg"></img>
+                          <div className="tasks-ui__todo__title">Complete reading the book</div>
+                          <div className="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
+                          <img className="tasks-ui__todo__delete-icon" src="/WhatTodo/delete icon.svg"></img>
                       </div>
                   </div>
               </div>
-              <div class="gallery-container"></div>
+              <div className="gallery-container"></div>
           </div>
       </main>
     </>
