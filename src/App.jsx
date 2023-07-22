@@ -6,9 +6,8 @@ import './navbar.css'
 import './tasks-ui.css'
 import './tasks-ui__options-menu.css'
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 export function TasksUIOptionsMenu(props) {
     const {checkedTodos,showOptionsMenuState,setShowOptionsMenuState} = props
@@ -18,9 +17,6 @@ export function TasksUIOptionsMenu(props) {
 
     useEffect(() => {
         const handleClickOutsideOptionsMenu = (event) => {
-            const optionsMenu = document.querySelector(".tasks-ui__options-menu")
-            const insideOptionsMenu = optionsMenu.querySelectorAll("*")
-
             if (!(optionsMenuRef.current.contains(event.target) || checkedTasksHistoryRoot.current.contains(event.target))) {
                 setShowOptionsMenuState(!showOptionsMenuState)
             }
@@ -54,6 +50,62 @@ export function TasksUIOptionsMenu(props) {
             </div>
             {showCheckedTasksHistoryState && <CheckedTasksHistory/>}
         </>
+    )
+}
+
+export function TodoCalendar(props) {
+    const {todos, setTodos, todo} = props
+    const calendarRef = useRef()
+    
+    const handleTodoDateChange = (id,value) => {
+        const newTodos = todos.map(todo => {
+            return todo.id === id ? {...todo, date:value.format('dddd, MMM D, YYYY')} : todo
+        })
+        setTodos(newTodos)
+    }
+    // removes calendar when click is outside
+    useEffect(() => {
+        const handleClickOutsideTodoCalendar = (event) => {
+            if (!(calendarRef.current.contains(event.target)) && !document.querySelector(".tasks-ui__todo__date-container").contains(event.target)) {
+                const newTodos = todos.map(todoInTodos => {
+                    return todoInTodos === todo ? {...todo, showTodoCalendarState:false} : todoInTodos
+                })
+                setTodos(newTodos)
+            }
+        }
+        
+        window.addEventListener('click',handleClickOutsideTodoCalendar)
+
+        return () => {window.removeEventListener('click',handleClickOutsideTodoCalendar)}
+    },[todos.map(todo => {return todo.showTodoCalendarState})])
+    // remove calendar when enter key is clicked
+    useEffect(() => {
+        const handleEnterKey = (event) => {
+            if (event.key === "Enter") {
+                const newTodos = todos.map(todo => {
+                    return {...todo,showTodoCalendarState:false}
+                })
+                setTodos(newTodos)
+            }
+        }
+
+        window.addEventListener("keydown",handleEnterKey)
+
+        return () => {window.removeEventListener("keydown",handleEnterKey)}
+    },[todos.map(todo => {return todo.showTodoCalendarState})])
+
+
+    return (
+        <div ref={calendarRef}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <StaticDatePicker
+                className={`tasks-ui__todo__date-calendar-${todo.showTodoCalendarState? "true" : "false"}`}
+                id="todoCalendar"
+                onChange={value => handleTodoDateChange(todo.id,value)}
+                slotProps={{actionBar: {actions: []}}}
+                />
+            </LocalizationProvider>
+        </div>
     )
 }
 
@@ -98,50 +150,6 @@ export function MainTodos() {
         })
         setTodos(newTodos)
     }
-    const handleTodoDateChange = (id,value) => {
-        const newTodos = todos.map(todo => {
-            return todo.id === id ? {...todo, date:value.format('dddd, MMM D, YYYY')} : todo
-        })
-        setTodos(newTodos)
-    }
-    // removes calendar when click is outside
-    useEffect(() => {
-        const handleClickOutsideTodoCalendar = (event) => {
-            const allCalendars = document.querySelectorAll('.tasks-ui__todo__date-calendar-true')
-            let clickIsInACalendar = Array.from(allCalendars).some(calendar => {
-                return calendar.contains(event.target)
-            });
-
-            const allDates = document.querySelectorAll('.tasks-ui__todo__date')
-            let clickIsInADateDiv = Array.from(allDates).some(dateDiv => {
-                return dateDiv.contains(event.target)
-            })
-
-            if (!(clickIsInADateDiv || clickIsInACalendar)) {
-                const newTodos = todos.map(todo => {return {...todo, showTodoCalendarState:false}})
-                setTodos(newTodos)
-            }
-        }
-
-        window.addEventListener('click',handleClickOutsideTodoCalendar)
-
-        return () => {window.removeEventListener('click',handleClickOutsideTodoCalendar)}
-    },[todos.map(todo => {return todo.showTodoCalendarState})])
-    // remove calendar when enter key is clicked
-    useEffect(() => {
-        const handleEnterKey = (event) => {
-            if (event.key === "Enter") {
-                const newTodos = todos.map(todo => {
-                    return {...todo,showTodoCalendarState:false}
-                })
-                setTodos(newTodos)
-            }
-        }
-
-        window.addEventListener("keydown",handleEnterKey)
-
-        return () => {window.removeEventListener("keydown",handleEnterKey)}
-    },[todos.map(todo => {return todo.showTodoCalendarState})])
 
     const [checkedTodos,setCheckedTodos] = useState([])
     const checkTodo = (id) => {
@@ -155,6 +163,7 @@ export function MainTodos() {
         })
         setTodos(newTodos)
     }
+
     const [showOptionsMenuState,setShowOptionsMenuState] = useState(false)
     const showOptionsMenu = () => {
         setShowOptionsMenuState(!showOptionsMenuState)
@@ -197,14 +206,7 @@ export function MainTodos() {
 
                         <div className="tasks-ui__todo__date-container">
                             <div className="tasks-ui__todo__date" onClick={e => showTodoCalendar(todo.id)}>{todo.date}</div>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <StaticDatePicker 
-                                className={`tasks-ui__todo__date-calendar-${todo.showTodoCalendarState? "true" : "false"}`}
-                                id="todoCalendar"
-                                onChange={value => handleTodoDateChange(todo.id,value)}
-                                slotProps={{actionBar: {actions: []}}}
-                                />
-                            </LocalizationProvider>
+                            {todo.showTodoCalendarState && <TodoCalendar todo={todo} todos={todos} setTodos={setTodos} />}
                         </div>
 
                         <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
@@ -220,7 +222,6 @@ export function MainTodos() {
 
 export function NormalTodos() {
     const [todos, setTodos] = useState([])
-    const [todoValue, setTodoValue] = useState("")
   
     const addTodo = () => {
       if (todos.length < 10) {
