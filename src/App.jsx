@@ -13,27 +13,28 @@ export function TasksUIOptionsMenu(props) {
     const {checkedTodos,showOptionsMenuState,setShowOptionsMenuState} = props
     const [showCheckedTasksHistoryState,setShowCheckedTasksHistoryState] = useState(false)
     const optionsMenuRef = useRef(null)
-    const checkedTasksHistoryRoot = useRef(null)
+    const checkedTasksHistoryRef = useRef(null)
 
     useEffect(() => {
+        const optionMenu = document.getElementById("three-dots")
+        
         const handleClickOutsideOptionsMenu = (event) => {
-            if (!(optionsMenuRef.current.contains(event.target) || checkedTasksHistoryRoot.current.contains(event.target))) {
-                setShowOptionsMenuState(!showOptionsMenuState)
+            if (!optionsMenuRef.current.contains(event.target) && !optionMenu.contains(event.target) && !checkedTasksHistoryRef.current.contains(event.target)) {
+                setShowOptionsMenuState(false)
             }
         }
 
         window.addEventListener("click",handleClickOutsideOptionsMenu)
-        return () => {
-            window.removeEventListener("click",handleClickOutsideOptionsMenu)
-        }
+        return () => {window.removeEventListener("click",handleClickOutsideOptionsMenu)}
     })
+    
 
     const showCheckedTasksHistory = () => {
         setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
     }
     function CheckedTasksHistory() {
         return (
-            <div className="checked-tasks-history-container" ref={checkedTasksHistoryRoot}>
+            <div className="checked-tasks-history-container" ref={checkedTasksHistoryRef}>
                 {checkedTodos.map(checkedTodo => {
                     return (
                         <div className="checked-tasks-history-container__checkedTodo">{checkedTodo.name}</div>
@@ -66,7 +67,9 @@ export function TodoCalendar(props) {
     // removes calendar when click is outside
     useEffect(() => {
         const handleClickOutsideTodoCalendar = (event) => {
-            if (!(calendarRef.current.contains(event.target)) && !document.querySelector(".tasks-ui__todo__date-container").contains(event.target)) {
+            const todoDateElement = document.getElementById(`date-${todo.id}`)
+            
+            if (!(calendarRef.current.contains(event.target)) && !todoDateElement.contains(event.target)) {
                 const newTodos = todos.map(todoInTodos => {
                     return todoInTodos === todo ? {...todo, showTodoCalendarState:false} : todoInTodos
                 })
@@ -77,7 +80,7 @@ export function TodoCalendar(props) {
         window.addEventListener('click',handleClickOutsideTodoCalendar)
 
         return () => {window.removeEventListener('click',handleClickOutsideTodoCalendar)}
-    },[todos.map(todo => {return todo.showTodoCalendarState})])
+    })
     // remove calendar when enter key is clicked
     useEffect(() => {
         const handleEnterKey = (event) => {
@@ -92,7 +95,7 @@ export function TodoCalendar(props) {
         window.addEventListener("keydown",handleEnterKey)
 
         return () => {window.removeEventListener("keydown",handleEnterKey)}
-    },[todos.map(todo => {return todo.showTodoCalendarState})])
+    },[todo.showTodoCalendarState])
 
 
     return (
@@ -166,12 +169,12 @@ export function MainTodos() {
 
     const [showOptionsMenuState,setShowOptionsMenuState] = useState(false)
     const showOptionsMenu = () => {
-        setShowOptionsMenuState(!showOptionsMenuState)
+        setShowOptionsMenuState(true)
     }
 
     return (
         <div className="main-tasks-ui">
-            <button className="navbar__header-controls--three-dots__container" onClick={showOptionsMenu}>
+            <button className="navbar__header-controls--three-dots__container" id={"three-dots"} onClick={showOptionsMenu}>
                 <img className="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
             </button>
             {showOptionsMenuState && <TasksUIOptionsMenu checkedTodos={checkedTodos} showOptionsMenuState={showOptionsMenuState} setShowOptionsMenuState={setShowOptionsMenuState} />}
@@ -205,7 +208,7 @@ export function MainTodos() {
                         </div>
 
                         <div className="tasks-ui__todo__date-container">
-                            <div className="tasks-ui__todo__date" onClick={e => showTodoCalendar(todo.id)}>{todo.date}</div>
+                            <div className="tasks-ui__todo__date" id={`date-${todo.id}`} onClick={e => showTodoCalendar(todo.id)}>{todo.date}</div>
                             {todo.showTodoCalendarState && <TodoCalendar todo={todo} todos={todos} setTodos={setTodos} />}
                         </div>
 
