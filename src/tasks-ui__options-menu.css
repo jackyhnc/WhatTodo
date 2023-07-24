@@ -1,22 +1,48 @@
 .tasks-ui__options-menu {
+    display: inline-block;
     position: absolute;
-    top:-150px;
-    right:0;
+    top:0px;
+    right:0px;
+    transform: translate(30%,-90%);
 
-    width:200px;
-    height:200px;
+    width:250px;
+    box-sizing:border-box;
+    padding:24px;
 
     background-color: rgb(255, 255, 255);
-    border-radius:20px;
+    color:rgb(155, 155, 155);
+    border-radius:15px;
     box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
-
+    z-index: 100;
 }
-.tasks-ui__options-menu__button {
-    width:200px;
-    height:80px;
 
-    background-color: rgb(209, 209, 209);
-    border-radius:20px;
+.tasks-ui__options-menu__title {
+    font-size:14px;
+
+    padding-bottom:6px;
+    padding-left:2px;
+    margin-bottom:6px;
+
+    border-bottom-style: solid;
+    border-bottom-width:2px;
+    border-bottom-color: rgb(230, 230, 230);
+}
+
+.tasks-ui__options-menu__button {
+    width:100%;
+    height:50px;
+
+    border-radius:15px;
+
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding-left:16px;
+
+    color:rgb(155, 155, 155);
+}
+.tasks-ui__options-menu__button:hover {
+    background-color: rgb(241, 241, 241);
     
 }
 
@@ -25,4 +51,6 @@
     width:200px;
     height:200px;
     background-color: grey;
+
+    z-index: 100;
 }

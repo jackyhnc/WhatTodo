@@ -15,19 +15,39 @@ export function TasksUIOptionsMenu(props) {
     const optionsMenuRef = useRef(null)
     const checkedTasksHistoryRef = useRef(null)
 
+    /*delete options menu popup when clicked outside*/
     useEffect(() => {
-        const optionMenu = document.getElementById("three-dots")
+        const optionMenuButton = document.getElementById("three-dots-button")
         
         const handleClickOutsideOptionsMenu = (event) => {
-            if (!optionsMenuRef.current.contains(event.target) && !optionMenu.contains(event.target) && !checkedTasksHistoryRef.current.contains(event.target)) {
-                setShowOptionsMenuState(false)
+            if (!optionsMenuRef.current.contains(event.target) && !optionMenuButton.contains(event.target)) {
+                if (showCheckedTasksHistoryState) {
+                    if (!checkedTasksHistoryRef.current.contains(event.target)) {
+                        setShowOptionsMenuState(false)
+                    }
+                }
+                else {
+                    setShowOptionsMenuState(false)
+                }
             }
         }
 
         window.addEventListener("click",handleClickOutsideOptionsMenu)
         return () => {window.removeEventListener("click",handleClickOutsideOptionsMenu)}
-    })
-    
+    },[showOptionsMenuState])
+
+    /*delete options menu popup on enter keypress*/
+    useEffect(() => {
+        const handleEnterKey = (event) => {
+            if (event.key === "Enter") {
+                setShowOptionsMenuState(!showOptionsMenuState)
+            }
+        }
+
+        window.addEventListener("keydown",handleEnterKey)
+
+        return () => {window.removeEventListener("keydown",handleEnterKey)}
+    },[showOptionsMenuState])
 
     const showCheckedTasksHistory = () => {
         setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
@@ -47,6 +67,7 @@ export function TasksUIOptionsMenu(props) {
     return (
         <>
             <div className="tasks-ui__options-menu" ref={optionsMenuRef}>
+                <div className="tasks-ui__options-menu__title">Options</div>
                 <div className="tasks-ui__options-menu__button" onClick={showCheckedTasksHistory}>Tasks History</div>
             </div>
             {showCheckedTasksHistoryState && <CheckedTasksHistory/>}
@@ -169,14 +190,14 @@ export function MainTodos() {
 
     const [showOptionsMenuState,setShowOptionsMenuState] = useState(false)
     const showOptionsMenu = () => {
-        setShowOptionsMenuState(true)
+        setShowOptionsMenuState(!showOptionsMenuState)
     }
 
     return (
         <div className="main-tasks-ui">
-            <button className="navbar__header-controls--three-dots__container" id={"three-dots"} onClick={showOptionsMenu}>
+            <div className="navbar__header-controls--three-dots__container" id={"three-dots-button"} onClick={showOptionsMenu}>
                 <img className="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
-            </button>
+            </div>
             {showOptionsMenuState && <TasksUIOptionsMenu checkedTodos={checkedTodos} showOptionsMenuState={showOptionsMenuState} setShowOptionsMenuState={setShowOptionsMenuState} />}
             <div className="main-tasks-ui__title">
                 Today's Main Tasks
