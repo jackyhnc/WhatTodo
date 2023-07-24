@@ -10,10 +10,8 @@ import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 export function TasksUIOptionsMenu(props) {
-    const {checkedTodos,showOptionsMenuState,setShowOptionsMenuState} = props
-    const [showCheckedTasksHistoryState,setShowCheckedTasksHistoryState] = useState(false)
+    const {checkedTodos,showOptionsMenuState,setShowOptionsMenuState,showCheckedTasksHistoryState,setShowCheckedTasksHistoryState} = props
     const optionsMenuRef = useRef(null)
-    const checkedTasksHistoryRef = useRef(null)
 
     /*delete options menu popup when clicked outside*/
     useEffect(() => {
@@ -21,16 +19,10 @@ export function TasksUIOptionsMenu(props) {
         
         const handleClickOutsideOptionsMenu = (event) => {
             if (!optionsMenuRef.current.contains(event.target) && !optionMenuButton.contains(event.target)) {
-                if (showCheckedTasksHistoryState) {
-                    if (!checkedTasksHistoryRef.current.contains(event.target)) {
-                        setShowOptionsMenuState(false)
-                    }
-                }
-                else {
-                    setShowOptionsMenuState(false)
-                }
+                setShowOptionsMenuState(false)
             }
         }
+
 
         window.addEventListener("click",handleClickOutsideOptionsMenu)
         return () => {window.removeEventListener("click",handleClickOutsideOptionsMenu)}
@@ -45,33 +37,23 @@ export function TasksUIOptionsMenu(props) {
         }
 
         window.addEventListener("keydown",handleEnterKey)
-
         return () => {window.removeEventListener("keydown",handleEnterKey)}
     },[showOptionsMenuState])
 
     const showCheckedTasksHistory = () => {
         setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
     }
-    function CheckedTasksHistory() {
-        return (
-            <div className="checked-tasks-history-container" ref={checkedTasksHistoryRef}>
-                {checkedTodos.map(checkedTodo => {
-                    return (
-                        <div className="checked-tasks-history-container__checkedTodo">{checkedTodo.name}</div>
-                    )
-                })}
-            </div>
-        )
-    }
 
     return (
-        <>
-            <div className="tasks-ui__options-menu" ref={optionsMenuRef}>
-                <div className="tasks-ui__options-menu__title">Options</div>
-                <div className="tasks-ui__options-menu__button" onClick={showCheckedTasksHistory}>Tasks History</div>
+        <div className="tasks-ui__options-menu" ref={optionsMenuRef}>
+            <div className="tasks-ui__options-menu__header-container">
+            <div className="tasks-ui__options-menu__title">Options</div>
+            <button className="tasks-ui__options-menu__delete-button" onClick={e => setShowOptionsMenuState(!showOptionsMenuState)}>
+                <img className="tasks-ui__options-menu__delete-icon" src="/WhatTodo/delete icon.svg"></img>
+            </button>
             </div>
-            {showCheckedTasksHistoryState && <CheckedTasksHistory/>}
-        </>
+            <div className={`tasks-ui__options-menu__button-${showCheckedTasksHistoryState ? "selected" : "unselected"}`} onClick={showCheckedTasksHistory}>Completed Tasks</div>
+        </div>
     )
 }
 
@@ -176,6 +158,7 @@ export function MainTodos() {
     }
 
     const [checkedTodos,setCheckedTodos] = useState([])
+    const [showCheckedTasksHistoryState,setShowCheckedTasksHistoryState] = useState(false)
     const checkTodo = (id) => {
         const newTodos = []
         todos.map(todo => {
@@ -195,28 +178,65 @@ export function MainTodos() {
 
     return (
         <div className="main-tasks-ui">
-            <div className="navbar__header-controls--three-dots__container" id={"three-dots-button"} onClick={showOptionsMenu}>
+            <button className="navbar__header-controls--three-dots__container" id={"three-dots-button"} onClick={showOptionsMenu}>
                 <img className="navbar__header-controls--three-dots-svg" src="/WhatTodo/three dots.svg"/>
-            </div>
-            {showOptionsMenuState && <TasksUIOptionsMenu checkedTodos={checkedTodos} showOptionsMenuState={showOptionsMenuState} setShowOptionsMenuState={setShowOptionsMenuState} />}
+            </button>
+            {showOptionsMenuState && 
+            <TasksUIOptionsMenu 
+                checkedTodos={checkedTodos} 
+                showOptionsMenuState={showOptionsMenuState} 
+                setShowOptionsMenuState={setShowOptionsMenuState} 
+
+                showCheckedTasksHistoryState={showCheckedTasksHistoryState}
+                setShowCheckedTasksHistoryState={setShowCheckedTasksHistoryState}
+            />}
             <div className="main-tasks-ui__title">
-                Today's Main Tasks
+                {showCheckedTasksHistoryState ? "Today's Main Tasks | Completed" : "Today's Main Tasks" }
             </div>
+            {!showCheckedTasksHistoryState && 
             <button className="main-tasks-ui__add-button" onClick={addTodo}>
                 <img className="main-tasks-ui__add-icon" src="/WhatTodo/add icon.svg"></img>
             </button>
+            }
             <div className="tasks-ui__names-container">
                 
                 <div className="tasks-ui__names-container--title">Title</div>
                 <div className="tasks-ui__names-container--date">Date</div>
             </div>
             <div className="tasks-ui__todos-container">
-            {todos.map(todo => {
+            {!showCheckedTasksHistoryState && todos.map(todo => {
                 return (
                     <div className="tasks-ui__todo" key={todo.id}>
-                        <div className="tasks-ui__todo__checkbox-container" onClick={e => checkTodo(todo.id)}>
+                        <button className="tasks-ui__todo__checkbox-container" onClick={e => checkTodo(todo.id)}>
                             <div className="tasks-ui__todo__checkbox"></div>
+                        </button>
+
+                        <div className="tasks-ui__todo__title-container">
+                            <input className="tasks-ui__todo__title" 
+                            value={todo.name} 
+                            onChange={(e) => handleTodoChange(todo.id, e.target.value)}
+                            onKeyDown={exitOnEnter}
+                            type="text" 
+                            autoComplete="off">
+                            </input>
                         </div>
+
+                        <div className="tasks-ui__todo__date-container">
+                            <div className="tasks-ui__todo__date" id={`date-${todo.id}`} onClick={e => showTodoCalendar(todo.id)}>{todo.date}</div>
+                            {todo.showTodoCalendarState && <TodoCalendar todo={todo} todos={todos} setTodos={setTodos} />}
+                        </div>
+
+                        <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
+                            <img className="tasks-ui__todo__delete-icon" src="/WhatTodo/delete icon.svg"></img>
+                        </button>
+                    </div>
+                    )
+                })}
+
+            {showCheckedTasksHistoryState && checkedTodos.map(todo => {
+                return (
+                    <div className="tasks-ui__todo" key={todo.id}>
+                        <button className="tasks-ui__todo__checkbox-container"></button>
 
                         <div className="tasks-ui__todo__title-container">
                             <input className="tasks-ui__todo__title" 
