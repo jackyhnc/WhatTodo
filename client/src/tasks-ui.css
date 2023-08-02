@@ -1,0 +1,293 @@
+.main-tasks-ui, .todos-tasks-ui, .longterm-tasks-ui {
+    position:relative;
+
+    background-color:white;
+    max-width:100%;
+    height:476px;
+
+    box-sizing:border-box;
+    padding-left:24px;
+    padding-top:14px;
+
+    border-radius:25px;
+    box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+    transition:box-shadow 0.3s ease;
+
+    margin-bottom:64px;
+}
+.main-tasks-ui {
+    height:184px;
+}
+.main-tasks-ui:hover {
+    box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
+}
+.todos-tasks-ui:hover {
+    box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
+}
+.longterm-tasks-ui:hover {
+    box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
+}
+
+.main-tasks-ui__title {
+    margin:0;
+    display:inline-block;
+
+    padding-left:18px;
+    padding-right:18px;
+    padding-top:6px;
+    padding-bottom:6px;
+
+    background-color:rgba(158, 246, 178, 1);
+    border-radius:20px;
+
+    font-weight: 600;
+    font-size:18px;
+
+    vertical-align:middle;
+}
+.todos-tasks-ui__title {
+    margin:0;
+    display:inline-block;
+
+    padding-left:18px;
+    padding-right:18px;
+    padding-top:6px;
+    padding-bottom:6px;
+
+    background-color:rgba(182, 233, 255, 1);
+    border-radius:20px;
+
+    font-weight: 600;
+    font-size:18px;
+
+    vertical-align:middle;
+}
+.longterm-tasks-ui__title {
+    margin:0;
+    display:inline-block;
+
+    padding-left:18px;
+    padding-right:18px;
+    padding-top:6px;
+    padding-bottom:6px;
+
+    background-color:rgba(237, 223, 255, 1);
+    border-radius:20px;
+
+    font-weight: 600;
+    font-size:18px;
+
+    vertical-align:middle;
+}
+
+.main-tasks-ui__title-add-container {
+    display:flex;
+    align-items:center;
+}
+
+.main-tasks-ui__add-button {
+    height:32px;
+
+    border-radius: 50px;
+    padding:6px;
+    transition:background-color 0.2s ease;
+
+    margin-left:12px;
+}
+.main-tasks-ui__add-button:hover {
+    background-color: rgb(241, 241, 241);
+}
+.main-tasks-ui__add-icon{
+    width:20px;
+    height:20px;
+
+    vertical-align:middle;
+    opacity:0;
+    transition: opacity 0.2s ease;
+}
+.main-tasks-ui:hover .main-tasks-ui__add-icon{
+    opacity:1;
+}
+
+.todos-tasks-ui__add-button {
+    border-radius: 50px;
+    padding-top:6px;
+    padding-bottom:6px;
+    transition:background-color 0.2s ease;
+
+    margin-left:12px;
+}
+.todos-tasks-ui__add-button:hover {
+    background-color: rgb(241, 241, 241);
+}
+.todos-tasks-ui__add-icon{
+    width:20px;
+
+    vertical-align:middle;
+    opacity:0;
+    transition: opacity 0.2s ease;
+}
+.todos-tasks-ui:hover .todos-tasks-ui__add-icon{
+    opacity:1;
+}
+
+.longterm-tasks-ui__add-icon{
+    width:20px;
+
+    vertical-align:middle;
+    padding-left:12px;
+    opacity:0;
+    transition: opacity 0.2s ease;
+}
+.longterm-tasks-ui:hover .longterm-tasks-ui__add-icon{
+    opacity:1;
+}
+
+.tasks-ui__names-container {
+    display:grid;
+    grid-template-columns: 1.2fr 1fr;
+
+    width:100%;
+
+    box-sizing:border-box;
+    padding-left:60px;
+    padding-right:64px;
+    margin-top:20px;
+}
+.tasks-ui__names-container--title, .tasks-ui__names-container--date {
+    display:inline-block;
+    margin-right:00px;
+
+    font-size:14px;
+    color:rgb(155, 155, 155);
+}
+
+.tasks-ui__main-container {
+    display:flex;
+    justify-content: center;
+    width:100%;
+
+    box-sizing:border-box;
+    padding-right:24px;
+}
+.tasks-ui__no-todos-alert {
+    transform: translateY(150%);
+
+    font-size:14px;
+    color:rgb(155, 155, 155);
+}
+
+.tasks-ui__todos-container {
+    display:flex;
+    flex-direction: column;
+
+    width:100%;
+
+    box-sizing:border-box;
+    padding-right:44px;
+}
+
+.tasks-ui__todo {
+    display:grid;
+    grid-template-columns: 60px 1.2fr 1fr 20px;
+
+    width:100%;
+    height:36px;
+    align-items: center;
+
+}
+
+.tasks-ui__todo__checkbox-container{
+    display:flex;
+    justify-content: center;
+}
+.tasks-ui__todo__checkbox-container:hover .tasks-ui__todo__checkbox{
+    background-color: rgb(226, 226, 226);
+}
+.tasks-ui__todo__checkbox{
+    width:20px;
+    height:20px;
+
+    background-color: rgba(241, 241, 241, 1);
+    box-shadow: inset -5px 5px 5px -5px rgba(0, 0, 0, 0.25);
+}
+
+.tasks-ui__todo__title-container {
+    position: relative;
+}
+.tasks-ui__todo__title{
+    display: flex;
+    align-self: center;
+    border:0;
+
+    font-weight:500;
+
+    transition:box-shadow 0.2s ease;
+    transition: padding 0.2s ease;
+}
+.tasks-ui__todo__title:focus {
+    position: absolute;
+    left:0px;
+    top:50%;
+    transform: translateY(-50%);
+
+    outline:0;
+    box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+    border-radius:4px;
+    caret-color:black;
+    z-index:100;
+
+    font-size:20px;
+
+    padding:8px 0px 8px 8px;
+}
+
+.tasks-ui__todo__date-container{
+    position:relative;
+    height:100%;
+}
+.tasks-ui__todo__date{
+    display: flex;
+    align-items: center;
+    height:100%;
+}
+.tasks-ui__todo__date-calendar-false{
+    position:absolute;
+    opacity:0;
+}
+.tasks-ui__todo__date-calendar-true{
+    position:absolute;
+    left:-15px;
+    bottom:0;
+    z-index: 100;
+
+    background-color: rgb(247, 251, 255);
+    box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+    border-radius: 15px;
+    opacity:1;
+
+    transition:0.2s ease;
+}
+.tasks-ui__todo__date-calendar-true:hover{
+    box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
+}
+
+.tasks-ui__todo__delete-button {
+    border-radius: 50px;
+    width:32px;
+    padding:6px;
+    transition:background-color 0.2s ease;
+}
+.tasks-ui__todo__delete-button:hover {
+    background-color: rgb(241, 241, 241);
+}
+.tasks-ui__todo__delete-icon{
+    width:20px;
+
+    vertical-align:middle;
+    opacity:0;
+    transition: opacity 0.2s ease;
+}
+.tasks-ui__todos-container:hover .tasks-ui__todo__delete-icon {
+    opacity: 1;
+}
