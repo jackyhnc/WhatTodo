@@ -8,5 +8,4 @@ const pool = new Pool({
     database: 'todoapp'
 })
 
-
 module.exports = pool
