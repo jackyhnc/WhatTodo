@@ -5,8 +5,7 @@ const pool = require('./db.js')
 const cors = require("cors")
 
 app.use(cors())
-
-// Backend code (running on your backend server)
+app.use(express.json())
 
 //get todos 
 app.get("/todos/:userEmail", async (req, res) => {
@@ -17,6 +16,18 @@ app.get("/todos/:userEmail", async (req, res) => {
         res.json(todos.rows)
     } catch (error) {
         console.error(error)
+    }
+})
+
+//create todos
+app.post("/todos",(req,res) => {
+    const { id, name, date, user_email } = req.body
+    try {
+        pool.query(`INSERT INTO todos(id, name, date, user_email) VALUES ($1, $2, $3, $4)`,[id, name, date, user_email])
+        console.log('todo added')
+    }
+    catch {
+        console.error(err)
     }
 })
 

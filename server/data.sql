@@ -1,7 +1,7 @@
 CREATE DATABASE todoapp;
 
 CREATE TABLE todos (
-    id INT PRIMARY KEY,
+    id BIGINT PRIMARY KEY,
     name VARCHAR(40),
     showTodoCalendarState BOOL,
     date VARCHAR(300),
