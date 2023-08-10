@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import dayjs from 'dayjs'
 import './general.css'
 import './headertitle.css'
 import './main.css'
@@ -63,7 +64,7 @@ export function TodoCalendar(props) {
     
     const handleTodoDateChange = (id,value) => {
         const newTodos = todos.map(todo => {
-            return todo.id === id ? {...todo, date:value.format('dddd, MMM D, YYYY')} : todo
+            return todo.id === id ? {...todo, date:value} : todo
         })
         setTodos(newTodos)
     }
@@ -115,9 +116,9 @@ export function TodoCalendar(props) {
     )
 }
 
-export function MainTodos() {
-    const [todos, setTodos] = useState([])
-
+export function MainTodos(props) {
+    const {todos, setTodos, postData, deleteData} = props
+    
     const addTodo = () => {
       if (todos.length < 2) {
           const todo = {
@@ -127,16 +128,15 @@ export function MainTodos() {
               date:"",
               user_email:""
           }
+          postData(todo)
           setTodos([...todos,todo])
       }
     }
     const deleteTodo = (id) => {
-      const newTodos = []
-      todos.map(todo => {
-          if (todo.id !== id) {
-              newTodos.push(todo)
-          }
+      const newTodos = todos.filter(todo => {
+            return todo.id !== id
       })
+      deleteData(id)
       setTodos(newTodos)
     }
     const deleteCheckedTodo = (id) => {
@@ -188,7 +188,6 @@ export function MainTodos() {
 
     return (
         <div className="main-tasks-ui">
-            
             <button className="navbar__header-controls--three-dots__container" id={"three-dots-button"} onClick={showOptionsMenu}>
                 <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
             </button>
@@ -242,7 +241,9 @@ export function MainTodos() {
                         </div>
 
                         <div className="tasks-ui__todo__date-container">
-                            <div className="tasks-ui__todo__date" id={`date-${todo.id}`} onClick={e => showTodoCalendar(todo.id)}>{todo.date}</div>
+                            <div className="tasks-ui__todo__date" id={`date-${todo.id}`} onClick={e => showTodoCalendar(todo.id)}>
+                                {todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : ""}
+                            </div>
                             {todo.showTodoCalendarState && <TodoCalendar todo={todo} todos={todos} setTodos={setTodos} />}
                         </div>
 
@@ -268,7 +269,7 @@ export function MainTodos() {
                         </div>
 
                         <div className="tasks-ui__todo__date-container">
-                            <div className="tasks-ui__todo__date" id={`date-${todo.id}`}>{todo.date}</div>
+                            <div className="tasks-ui__todo__date" id={`date-${todo.id}`}>{todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : ""}</div>
                         </div>
 
                         <button className="tasks-ui__todo__delete-button" onClick={e => deleteCheckedTodo(todo.id)}>
@@ -287,11 +288,11 @@ export function NormalTodos() {
   
     const addTodo = () => {
       if (todos.length < 10) {
-          const mainTodo = {
+          const todo = {
               id: Date.now(),
               name:""
           }
-          setTodos([...todos,mainTodo])
+          setTodos([...todos,todo])
       }
     }
   
@@ -361,19 +362,52 @@ export function NormalTodos() {
 }
 
 export default function App() {
+    const [todos, setTodos] = useState([])
+
+    useEffect(() => {
+        setTodos(
+            todos?.sort((a,b) => {new Date(a.date) - new Date(b.date)})
+        )
+    },[todos])
+
+    const userEmail = "grasspatch@gmail.com"
 
     const getData = async () => {
-        const userEmail = "example@email.com"
         try {
             const response = await fetch(`http://localhost:8000/todos/${userEmail}`)
+            const json = await response.json()
+            setTodos(json)
         } catch(error) {
             console.error(error)
         }
     }
-
     useEffect(() => {
         getData()
-    },[])
+    }, [])
+
+    const postData = async (todo) => {
+        try {
+            const response = await fetch(`http://localhost:8000/todos`, {
+                method:'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(todo)
+            })
+        }
+        catch {
+            console.error(error)
+        }
+    }
+
+    const deleteData = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:8000/todos/${id}`, {
+                method:'DELETE'
+            })
+        }
+        catch {
+            console.error(error)
+        }
+    }
     
 
   return (
@@ -454,9 +488,8 @@ export default function App() {
               </div>
           </nav>
           <div className="tasks-column__first">
-              <MainTodos />
+              <MainTodos todos={todos} setTodos={setTodos} postData={postData} deleteData={deleteData}/>
               <NormalTodos />
-              <MainTodos />
           </div>
           <div className="tasks-column__second">
               <div className="longterm-tasks-ui">
