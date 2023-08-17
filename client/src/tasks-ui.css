@@ -109,10 +109,16 @@
     opacity:1;
 }
 
+.todos-tasks-ui__title-add-container {
+    display:flex;
+    align-items:center;
+}
+
 .todos-tasks-ui__add-button {
+    height:32px;
+
     border-radius: 50px;
-    padding-top:6px;
-    padding-bottom:6px;
+    padding:6px;
     transition:background-color 0.2s ease;
 
     margin-left:12px;
@@ -122,6 +128,7 @@
 }
 .todos-tasks-ui__add-icon{
     width:20px;
+    height:20px;
 
     vertical-align:middle;
     opacity:0;

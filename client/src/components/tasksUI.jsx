@@ -1,0 +1,290 @@
+import { useState, useEffect, useRef } from 'react'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import dayjs from 'dayjs'
+import '../tasks-ui.css'
+import '../tasks-ui__options-menu.css'
+
+export function TasksUIOptionsMenu(props) {
+    const {checkedTodos,showOptionsMenuState,setShowOptionsMenuState,showCheckedTasksHistoryState,setShowCheckedTasksHistoryState} = props
+    const optionsMenuRef = useRef(null)
+
+    /*delete options menu popup when clicked outside*/
+    useEffect(() => {
+        const optionMenuButton = document.getElementById("three-dots-button")
+        
+        const handleClickOutsideOptionsMenu = (event) => {
+            if (!optionsMenuRef.current.contains(event.target) && !optionMenuButton.contains(event.target)) {
+                setShowOptionsMenuState(false)
+            }
+        }
+
+
+        window.addEventListener("click",handleClickOutsideOptionsMenu)
+        return () => {window.removeEventListener("click",handleClickOutsideOptionsMenu)}
+    },[showOptionsMenuState])
+
+    /*delete options menu popup on enter keypress*/
+    useEffect(() => {
+        const handleEnterKey = (event) => {
+            if (event.key === "Enter") {
+                setShowOptionsMenuState(!showOptionsMenuState)
+            }
+        }
+
+        window.addEventListener("keydown",handleEnterKey)
+        return () => {window.removeEventListener("keydown",handleEnterKey)}
+    },[showOptionsMenuState])
+
+    const showCheckedTasksHistory = () => {
+        setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
+    }
+
+    return (
+        <div className="tasks-ui__options-menu" ref={optionsMenuRef}>
+            <div className="tasks-ui__options-menu__header-container">
+            <div className="tasks-ui__options-menu__title">Options</div>
+            <button className="tasks-ui__options-menu__delete-button" onClick={e => setShowOptionsMenuState(!showOptionsMenuState)}>
+                <img className="tasks-ui__options-menu__delete-icon" src="delete icon.svg"></img>
+            </button>
+            </div>
+            <div className={`tasks-ui__options-menu__button-${showCheckedTasksHistoryState ? "selected" : "unselected"}`} onClick={showCheckedTasksHistory}>Completed Tasks</div>
+        </div>
+    )
+}
+
+export function TodoCalendar(props) {
+    const {todos, setTodos, todo} = props
+    const calendarRef = useRef()
+    
+    const handleTodoDateChange = (id,value) => {
+        const newTodos = todos.map(todo => {
+            return todo.id === id ? {...todo, date:value} : todo
+        })
+        setTodos(newTodos)
+    }
+    // removes calendar when click is outside
+    useEffect(() => {
+        const handleClickOutsideTodoCalendar = (event) => {
+            const todoDateElement = document.getElementById(`date-${todo.id}`)
+            
+            if (!(calendarRef.current.contains(event.target)) && !todoDateElement.contains(event.target)) {
+                const newTodos = todos.map(todoInTodos => {
+                    return todoInTodos === todo ? {...todo, showTodoCalendarState:false} : todoInTodos
+                })
+                setTodos(newTodos)
+            }
+        }
+        
+        window.addEventListener('click',handleClickOutsideTodoCalendar)
+
+        return () => {window.removeEventListener('click',handleClickOutsideTodoCalendar)}
+    })
+    // remove calendar when enter key is clicked
+    useEffect(() => {
+        const handleEnterKey = (event) => {
+            if (event.key === "Enter") {
+                const newTodos = todos.map(todo => {
+                    return {...todo,showTodoCalendarState:false}
+                })
+                setTodos(newTodos)
+            }
+        }
+
+        window.addEventListener("keydown",handleEnterKey)
+
+        return () => {window.removeEventListener("keydown",handleEnterKey)}
+    },[todo.showTodoCalendarState])
+
+
+    return (
+        <div ref={calendarRef}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <StaticDatePicker
+                className={`tasks-ui__todo__date-calendar-${todo.showTodoCalendarState? "true" : "false"}`}
+                id="todoCalendar"
+                onChange={value => handleTodoDateChange(todo.id,value)}
+                slotProps={{actionBar: {actions: []}}}
+                />
+            </LocalizationProvider>
+        </div>
+    )
+}
+
+export function TasksUI(props) {
+    const {todos, setTodos, postData, deleteData} = props
+
+    const { tasksUIType, tasksUITitle, tasksUILimit } = props.custom
+
+    const [tasksUITodos, setTasksUITodos] = useState([])
+    useEffect(() => {
+        setTasksUITodos(
+            todos.filter(todo => todo.type === tasksUIType)
+        )
+    },[todos])
+
+    
+    const addTodo = () => {
+        if (tasksUITodos.length < tasksUILimit) {
+            const todo = {
+                id: Date.now(),
+                name:"",
+                showTodoCalendarState:false,
+                date:"",
+                user_email:"",
+                type:tasksUIType
+            }
+            postData(todo)
+            setTodos([...todos,todo])
+        }
+    }
+    const deleteTodo = (id) => {
+    const newTodos = todos.filter(todo => {
+            return todo.id !== id
+    })
+        deleteData(id)
+        setTodos(newTodos)
+    }
+    const deleteCheckedTodo = (id) => {
+        const newCheckedTodos = []
+        checkedTodos.map(newCheckedTodo => {
+            if (newCheckedTodo.id !== id) {
+                newCheckedTodos.push(newCheckedTodo)
+            }
+        })
+        setCheckedTodos(newCheckedTodos)
+    }
+    const handleTodoChange = (id, value) => {
+    const newTodos = todos.map(todo => {
+        return todo.id === id ? {...todo, name:value} : todo
+    })
+    setTodos(newTodos)
+    }
+    const exitOnEnter = (e) => {
+        if (e.key === 'Enter') {
+            e.target.blur()
+        }
+    }
+
+    const showTodoCalendar = (id) => {
+        const newTodos = todos.map(todo => {
+            return todo.id === id ? {...todo, showTodoCalendarState:!todo.showTodoCalendarState} : todo
+        })
+        setTodos(newTodos)
+    }
+
+    const [checkedTodos,setCheckedTodos] = useState([])
+    const [showCheckedTasksHistoryState,setShowCheckedTasksHistoryState] = useState(false)
+    const checkTodo = (id) => {
+        const newTodos = []
+        todos.map(todo => {
+            if (todo.id !== id) {
+                newTodos.push(todo)
+            } else {
+                setCheckedTodos([...checkedTodos,todo])
+            }
+        })
+        setTodos(newTodos)
+    }
+
+    const [showOptionsMenuState,setShowOptionsMenuState] = useState(false)
+    const showOptionsMenu = () => {
+        setShowOptionsMenuState(!showOptionsMenuState)
+    }
+
+    return (
+        <div className={`${tasksUIType}-tasks-ui`}>
+            <button className="navbar__header-controls--three-dots__container" id={"three-dots-button"} onClick={showOptionsMenu}>
+                <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
+            </button>
+            {showOptionsMenuState && 
+            <TasksUIOptionsMenu 
+                checkedTodos={checkedTodos} 
+                showOptionsMenuState={showOptionsMenuState} 
+                setShowOptionsMenuState={setShowOptionsMenuState} 
+
+                showCheckedTasksHistoryState={showCheckedTasksHistoryState}
+                setShowCheckedTasksHistoryState={setShowCheckedTasksHistoryState}
+            />}
+            <div className={`${tasksUIType}-tasks-ui__title-add-container`}>
+                <div className={`${tasksUIType}-tasks-ui__title`}>
+                    {showCheckedTasksHistoryState ? `${tasksUITitle} | Completed` : tasksUITitle }
+                </div>
+                {!showCheckedTasksHistoryState && 
+                <button className={`${tasksUIType}-tasks-ui__add-button`} onClick={addTodo}>
+                    <img className={`${tasksUIType}-tasks-ui__add-icon`} src="add icon.svg"></img>
+                </button>
+                }
+            </div>
+
+            <div className="tasks-ui__names-container">
+                <div className="tasks-ui__names-container--title">Title</div>
+                <div className="tasks-ui__names-container--date">Date</div>
+            </div>
+
+            <div className="tasks-ui__main-container">
+                {!showCheckedTasksHistoryState ? 
+                    !tasksUITodos.length && <div className="tasks-ui__no-todos-alert">No Todos</div> : 
+                    !checkedTodos.length && <div className="tasks-ui__no-todos-alert">No Completed Todos</div>
+                }
+            </div>
+            <div className="tasks-ui__todos-container">
+            {!showCheckedTasksHistoryState && tasksUITodos.map(todo => {
+                return (
+                    <div className="tasks-ui__todo" key={todo.id}>
+                        <button className="tasks-ui__todo__checkbox-container" onClick={e => checkTodo(todo.id)}>
+                            <div className="tasks-ui__todo__checkbox"></div>
+                        </button>
+
+                        <div className="tasks-ui__todo__title-container">
+                            <input className="tasks-ui__todo__title" 
+                            value={todo.name} 
+                            onChange={(e) => handleTodoChange(todo.id, e.target.value)}
+                            onKeyDown={exitOnEnter}
+                            type="text" 
+                            autoComplete="off">
+                            </input>
+                        </div>
+
+                        <div className="tasks-ui__todo__date-container">
+                            <div className="tasks-ui__todo__date" id={`date-${todo.id}`} onClick={e => showTodoCalendar(todo.id)}>
+                                {todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : ""}
+                            </div>
+                            {todo.showTodoCalendarState && <TodoCalendar todo={todo} todos={todos} setTodos={setTodos} />}
+                        </div>
+
+                        <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
+                            <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
+                        </button>
+                    </div>
+                    )
+                })}
+            {showCheckedTasksHistoryState && checkedTodos.map(todo => {
+                return (
+                    <div className="tasks-ui__todo" key={todo.id}>
+                        <button className="tasks-ui__todo__checkbox-container"></button>
+
+                        <div className="tasks-ui__todo__title-container">
+                            <input className="tasks-ui__todo__title" 
+                            value={todo.name} 
+                            onKeyDown={exitOnEnter}
+                            type="text" 
+                            autoComplete="off">
+                            </input>
+                        </div>
+
+                        <div className="tasks-ui__todo__date-container">
+                            <div className="tasks-ui__todo__date" id={`date-${todo.id}`}>{todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : ""}</div>
+                        </div>
+
+                        <button className="tasks-ui__todo__delete-button" onClick={e => deleteCheckedTodo(todo.id)}>
+                            <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
+                        </button>
+                    </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
