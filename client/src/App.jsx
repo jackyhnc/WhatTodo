@@ -51,10 +51,6 @@ export default function App() {
             console.error(error)
         }
     }
-    
-    useEffect(() => {
-        console.log('changed')
-    },[todos])
 
 return (
     <>
@@ -134,66 +130,35 @@ return (
             </div>
         </nav>
         <div className="tasks-column__first">
-        <TasksUI 
-            todos={todos} 
-            setTodos={setTodos} 
-            
-            postData={postData} 
-            deleteData={deleteData}
+            <TasksUI 
+                todos={todos} 
+                setTodos={setTodos} 
+                
+                postData={postData} 
+                deleteData={deleteData}
 
-            custom={{
-                tasksUIType: 'main',
-                tasksUITitle: "Today's Main Tasks",
-                tasksUILimit: 2
-            }}
-        />
-        <TasksUI 
-            todos={todos} 
-            setTodos={setTodos} 
-            
-            postData={postData} 
-            deleteData={deleteData}
+                custom={{
+                    tasksUIType: 'main',
+                    tasksUITitle: "Today's Main Tasks",
+                    tasksUILimit: 2
+                }}
+            />
+            <TasksUI 
+                todos={todos} 
+                setTodos={setTodos} 
+                
+                postData={postData} 
+                deleteData={deleteData}
 
-            custom={{
-                tasksUIType: 'todos',
-                tasksUITitle: "To Do's",
-                tasksUILimit: 10
-            }}
-        />
+                custom={{
+                    tasksUIType: 'todos',
+                    tasksUITitle: "To Do's",
+                    tasksUILimit: 10
+                }}
+            />
         </div>
         <div className="tasks-column__second">
-            <div className="longterm-tasks-ui">
-                <button className="navbar__header-controls--three-dots__container">
-                    <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
-                </button>
-                <div className="longterm-tasks-ui__title">
-                    Long Term Tasks
-                </div>
-                <img className="longterm-tasks-ui__add-icon" src="add icon.svg"></img>
-                <div className="tasks-ui__names-container">
-                    <div className="tasks-ui__names-container--title">Title</div>
-                    <div className="tasks-ui__names-container--date">Date</div>
-                </div>
-                <div className="tasks-ui__todos-container">
-                    <div className="tasks-ui__todo">
-                        <div className="tasks-ui__todo__checkbox-container">
-                            <div className="tasks-ui__todo__checkbox"></div>
-                        </div>
-                        <div className="tasks-ui__todo__title">Complete reading the book</div>
-                        <div className="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
-                        <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
-                    </div>
-                    <div className="tasks-ui__todo">
-                        <div className="tasks-ui__todo__checkbox-container">
-                            <div className="tasks-ui__todo__checkbox"></div>
-                        </div>
-                        <div className="tasks-ui__todo__title">Complete reading the book</div>
-                        <div className="tasks-ui__todo__date">Friday, Sep 3, 2023</div>
-                        <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
-                    </div>
-                </div>
-            </div>
-            <div className="gallery-container"></div>
+        
         </div>
     </main>
     </>

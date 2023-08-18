@@ -7,12 +7,12 @@ import '../tasks-ui.css'
 import '../tasks-ui__options-menu.css'
 
 export function TasksUIOptionsMenu(props) {
-    const {checkedTodos,showOptionsMenuState,setShowOptionsMenuState,showCheckedTasksHistoryState,setShowCheckedTasksHistoryState} = props
+    const {tasksUIId,checkedTodos,showOptionsMenuState,setShowOptionsMenuState,showCheckedTasksHistoryState,setShowCheckedTasksHistoryState} = props
     const optionsMenuRef = useRef(null)
 
     /*delete options menu popup when clicked outside*/
     useEffect(() => {
-        const optionMenuButton = document.getElementById("three-dots-button")
+        const optionMenuButton = document.getElementById(`three-dots-button-${tasksUIId}`)
         
         const handleClickOutsideOptionsMenu = (event) => {
             if (!optionsMenuRef.current.contains(event.target) && !optionMenuButton.contains(event.target)) {
@@ -95,7 +95,7 @@ export function TodoCalendar(props) {
         window.addEventListener("keydown",handleEnterKey)
 
         return () => {window.removeEventListener("keydown",handleEnterKey)}
-    },[todo.showTodoCalendarState])
+    })
 
 
     return (
@@ -114,10 +114,11 @@ export function TodoCalendar(props) {
 
 export function TasksUI(props) {
     const {todos, setTodos, postData, deleteData} = props
-
     const { tasksUIType, tasksUITitle, tasksUILimit } = props.custom
+    const tasksUIId = Date.now()
 
     const [tasksUITodos, setTasksUITodos] = useState([])
+    //sorts tasksUITodos by date
     useEffect(() => {
         setTasksUITodos(
             todos.filter(todo => todo.type === tasksUIType)
@@ -130,7 +131,6 @@ export function TasksUI(props) {
             const todo = {
                 id: Date.now(),
                 name:"",
-                showTodoCalendarState:false,
                 date:"",
                 user_email:"",
                 type:tasksUIType
@@ -194,12 +194,14 @@ export function TasksUI(props) {
     }
 
     return (
-        <div className={`${tasksUIType}-tasks-ui`}>
-            <button className="navbar__header-controls--three-dots__container" id={"three-dots-button"} onClick={showOptionsMenu}>
+        <div className='tasks-ui'>
+            <button className="navbar__header-controls--three-dots__container" id={`three-dots-button-${tasksUIId}`} onClick={showOptionsMenu}>
                 <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
             </button>
             {showOptionsMenuState && 
             <TasksUIOptionsMenu 
+                tasksUIId={tasksUIId}
+
                 checkedTodos={checkedTodos} 
                 showOptionsMenuState={showOptionsMenuState} 
                 setShowOptionsMenuState={setShowOptionsMenuState} 
@@ -207,13 +209,13 @@ export function TasksUI(props) {
                 showCheckedTasksHistoryState={showCheckedTasksHistoryState}
                 setShowCheckedTasksHistoryState={setShowCheckedTasksHistoryState}
             />}
-            <div className={`${tasksUIType}-tasks-ui__title-add-container`}>
-                <div className={`${tasksUIType}-tasks-ui__title`}>
+            <div className='tasks-ui__title-add-container'>
+                <div className='tasks-ui__title'>
                     {showCheckedTasksHistoryState ? `${tasksUITitle} | Completed` : tasksUITitle }
                 </div>
                 {!showCheckedTasksHistoryState && 
-                <button className={`${tasksUIType}-tasks-ui__add-button`} onClick={addTodo}>
-                    <img className={`${tasksUIType}-tasks-ui__add-icon`} src="add icon.svg"></img>
+                <button className='tasks-ui__add-button' onClick={addTodo}>
+                    <img className='tasks-ui__add-icon' src="add icon.svg"></img>
                 </button>
                 }
             </div>
@@ -239,11 +241,11 @@ export function TasksUI(props) {
 
                         <div className="tasks-ui__todo__title-container">
                             <input className="tasks-ui__todo__title" 
-                            value={todo.name} 
-                            onChange={(e) => handleTodoChange(todo.id, e.target.value)}
-                            onKeyDown={exitOnEnter}
-                            type="text" 
-                            autoComplete="off">
+                                value={todo.name} 
+                                onChange={(e) => handleTodoChange(todo.id, e.target.value)}
+                                onKeyDown={exitOnEnter}
+                                type="text" 
+                                autoComplete="off">
                             </input>
                         </div>
 
