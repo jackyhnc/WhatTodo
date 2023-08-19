@@ -125,6 +125,36 @@ export function TasksUI(props) {
         )
     },[todos])
 
+    const [tasksUIStyleLength, setTasksUIStyleLength] = useState(176)
+    const tasksUIStyle = {
+        position:'relative',
+        display:'flex',
+        flexDirection: 'column',
+
+        backgroundColor:'white',
+        maxWidth:'100%',
+        height:`${tasksUIStyleLength}px`,
+
+        boxSizing:'border-box',
+
+        padding:'14px 24px 0px 24px',
+
+        borderRadius:'25px',
+        boxShadow:'1px 1px 10px -1px rgb(0, 54, 135, 0.3)',
+        transition:'box-shadow 0.3s ease',
+
+        marginBottom:'64px'
+    }
+    const TasksUIStyleOnHover = {
+        boxShadow:'2px 3px 17px -1px rgb(0, 54, 135, 0.3)'
+    }
+    //updates length of module when todo added
+    useEffect(() => {
+        if (tasksUITodos.length > 1) {
+            setTasksUIStyleLength(140 + (tasksUITodos.length - 1) * 36)
+        }
+    },[tasksUITodos])
+
     
     const addTodo = () => {
         if (tasksUITodos.length < tasksUILimit) {
@@ -194,7 +224,7 @@ export function TasksUI(props) {
     }
 
     return (
-        <div className='tasks-ui'>
+        <div style={tasksUIStyle}>
             <button className="navbar__header-controls--three-dots__container" id={`three-dots-button-${tasksUIId}`} onClick={showOptionsMenu}>
                 <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
             </button>
@@ -209,6 +239,7 @@ export function TasksUI(props) {
                 showCheckedTasksHistoryState={showCheckedTasksHistoryState}
                 setShowCheckedTasksHistoryState={setShowCheckedTasksHistoryState}
             />}
+
             <div className='tasks-ui__title-add-container'>
                 <div className='tasks-ui__title'>
                     {showCheckedTasksHistoryState ? `${tasksUITitle} | Completed` : tasksUITitle }
@@ -225,12 +256,12 @@ export function TasksUI(props) {
                 <div className="tasks-ui__names-container--date">Date</div>
             </div>
 
-            <div className="tasks-ui__main-container">
+            {!tasksUITodos.length && <div className="tasks-ui__main-container">
                 {!showCheckedTasksHistoryState ? 
                     !tasksUITodos.length && <div className="tasks-ui__no-todos-alert">No Todos</div> : 
                     !checkedTodos.length && <div className="tasks-ui__no-todos-alert">No Completed Todos</div>
                 }
-            </div>
+            </div> }
             <div className="tasks-ui__todos-container">
             {!showCheckedTasksHistoryState && tasksUITodos.map(todo => {
                 return (
@@ -256,9 +287,11 @@ export function TasksUI(props) {
                             {todo.showTodoCalendarState && <TodoCalendar todo={todo} todos={todos} setTodos={setTodos} />}
                         </div>
 
-                        <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
-                            <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
-                        </button>
+                        <div className="tasks-ui__todo__delete-button-container">
+                            <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
+                                <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
+                            </button>
+                        </div>
                     </div>
                     )
                 })}
