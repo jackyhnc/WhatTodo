@@ -1,3 +1,21 @@
+.tasks-ui {
+    position:relative;
+    display:flex;
+    flex-direction: column;
+    max-Width:630px;
+    min-Width:610px;
+
+    background-Color:white;
+    height:176px;
+
+    box-Sizing:border-box;
+
+    padding:14px 24px 0px 24px;
+
+    border-Radius:25px;
+    box-Shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+    transition:box-shadow 0.3s ease;
+}
 .tasks-ui:hover {
     box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
 }
@@ -131,6 +149,8 @@
     align-self: center;
     border:0;
 
+    text-overflow: ellipsis;
+
     font-weight:500;
 
     transition:box-shadow 0.2s ease;
@@ -148,7 +168,7 @@
     caret-color:black;
     z-index:100;
 
-    font-size:20px;
+    font-size:18px;
 
     padding:8px 0px 8px 8px;
 }
@@ -161,6 +181,12 @@
     display: flex;
     align-items: center;
     height:100%;
+
+    transition: background-color 0.08s ease-in;
+}
+.tasks-ui__todo__date:hover{
+    background-color: rgba(0, 119, 255, 0.03);
+    border-radius:8px;
 }
 .tasks-ui__todo__date-calendar-false{
     position:absolute;

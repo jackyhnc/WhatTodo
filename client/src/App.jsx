@@ -12,6 +12,7 @@ export default function App() {
             todos?.sort((a,b) => {new Date(a.date) - new Date(b.date)})
         )
     },[todos])
+    const [taskModules, setTaskModules] = useState([])
 
     const userEmail = "grasspatch@gmail.com"
     
@@ -129,7 +130,7 @@ return (
                 </div>
             </div>
         </nav>
-        <div className="tasks-column__first">
+        <div className="tasks-modules-container">
             <TasksUI 
                 todos={todos} 
                 setTodos={setTodos} 
@@ -138,7 +139,6 @@ return (
                 deleteData={deleteData}
 
                 custom={{
-                    tasksUIType: 'main',
                     tasksUITitle: "Today's Main Tasks",
                     tasksUILimit: 2
                 }}
@@ -151,14 +151,10 @@ return (
                 deleteData={deleteData}
 
                 custom={{
-                    tasksUIType: 'todos',
                     tasksUITitle: "To Do's",
                     tasksUILimit: 10
                 }}
             />
-        </div>
-        <div className="tasks-column__second">
-        
         </div>
     </main>
     </>

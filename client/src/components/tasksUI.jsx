@@ -114,46 +114,32 @@ export function TodoCalendar(props) {
 
 export function TasksUI(props) {
     const {todos, setTodos, postData, deleteData} = props
-    const { tasksUIType, tasksUITitle, tasksUILimit } = props.custom
-    const tasksUIId = Date.now()
+    const { tasksUITitle, tasksUILimit } = props.custom
+
+    const [tasksUIId] = useState(Date.now()) //its in usestate bc it wont reassign value on rerender with just date.now()
+    //send this modules id to database
 
     const [tasksUITodos, setTasksUITodos] = useState([])
     //sorts tasksUITodos by date
     useEffect(() => {
         setTasksUITodos(
-            todos.filter(todo => todo.type === tasksUIType)
+            todos.filter(todo => todo.moduleId == tasksUIId)
         )
     },[todos])
 
     const [tasksUIStyleLength, setTasksUIStyleLength] = useState(176)
-    const tasksUIStyle = {
-        position:'relative',
-        display:'flex',
-        flexDirection: 'column',
-
-        backgroundColor:'white',
-        maxWidth:'100%',
-        height:`${tasksUIStyleLength}px`,
-
-        boxSizing:'border-box',
-
-        padding:'14px 24px 0px 24px',
-
-        borderRadius:'25px',
-        boxShadow:'1px 1px 10px -1px rgb(0, 54, 135, 0.3)',
-        transition:'box-shadow 0.3s ease',
-
-        marginBottom:'64px'
-    }
-    const TasksUIStyleOnHover = {
-        boxShadow:'2px 3px 17px -1px rgb(0, 54, 135, 0.3)'
-    }
     //updates length of module when todo added
     useEffect(() => {
         if (tasksUITodos.length > 1) {
             setTasksUIStyleLength(140 + (tasksUITodos.length - 1) * 36)
         }
     },[tasksUITodos])
+    useEffect(() => {
+        const tasksUIObj = document.getElementById(tasksUIId)
+        if (tasksUIObj) {
+            tasksUIObj.style.height = `${tasksUIStyleLength}px`
+        }
+    },[tasksUIStyleLength])
 
     
     const addTodo = () => {
@@ -163,7 +149,7 @@ export function TasksUI(props) {
                 name:"",
                 date:"",
                 user_email:"",
-                type:tasksUIType
+                moduleId:tasksUIId
             }
             postData(todo)
             setTodos([...todos,todo])
@@ -224,7 +210,7 @@ export function TasksUI(props) {
     }
 
     return (
-        <div style={tasksUIStyle}>
+        <div className='tasks-ui' id={tasksUIId}>
             <button className="navbar__header-controls--three-dots__container" id={`three-dots-button-${tasksUIId}`} onClick={showOptionsMenu}>
                 <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
             </button>

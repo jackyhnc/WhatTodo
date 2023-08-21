@@ -1,5 +1,7 @@
 main {
     display:flex;
+    
+    padding:0px 50px 0px 50px;
 
     margin:0 auto;
     margin-top:90px;
@@ -9,17 +11,16 @@ main {
 
 }
 
-.tasks-column__first {
-    min-width:630px;
+.tasks-modules-container {
     margin-left:64px;
-    margin-right:64px;
-}
+    width:100%;
 
-.longterm-tasks-ui {
-    background-color:white;
-    min-width:630px;
-    height:500px;
-    
-    border-radius:25px;
-    box-shadow:-1px 1px 10px -1px rgb(0, 54, 135, 0.3);
+    display:flex;
+    flex-direction:column;
+    flex-wrap:wrap;
+    max-height: 1000px;
+
+    row-gap:64px;
+    column-gap:64px;
+
 }
