@@ -3,11 +3,18 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
+import { ColorPicker, useColor } from "react-color-palette";
+import "react-color-palette/css";
+import { UID } from '../generateUID.js'
 import '../tasks-ui.css'
 import '../tasks-ui__options-menu.css'
 
 export function TasksUIOptionsMenu(props) {
-    const {tasksUIId,checkedTodos,showOptionsMenuState,setShowOptionsMenuState,showCheckedTasksHistoryState,setShowCheckedTasksHistoryState} = props
+    const {tasksUIId,
+        checkedTodos,showOptionsMenuState,setShowOptionsMenuState,
+        showCheckedTasksHistoryState,setShowCheckedTasksHistoryState,
+        tasksUITitleColor,setTasksUITitleColor
+    } = props
     const optionsMenuRef = useRef(null)
 
     /*delete options menu popup when clicked outside*/
@@ -20,11 +27,9 @@ export function TasksUIOptionsMenu(props) {
             }
         }
 
-
         window.addEventListener("click",handleClickOutsideOptionsMenu)
         return () => {window.removeEventListener("click",handleClickOutsideOptionsMenu)}
     },[showOptionsMenuState])
-
     /*delete options menu popup on enter keypress*/
     useEffect(() => {
         const handleEnterKey = (event) => {
@@ -41,6 +46,8 @@ export function TasksUIOptionsMenu(props) {
         setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
     }
 
+
+
     return (
         <div className="tasks-ui__options-menu" ref={optionsMenuRef}>
             <div className="tasks-ui__options-menu__header-container">
@@ -50,6 +57,14 @@ export function TasksUIOptionsMenu(props) {
             </button>
             </div>
             <div className={`tasks-ui__options-menu__button-${showCheckedTasksHistoryState ? "selected" : "unselected"}`} onClick={showCheckedTasksHistory}>Completed Tasks</div>
+            <div className='tasks-ui__options-menu__button-unselected'>Change Color</div>
+            <ColorPicker
+                color={tasksUITitleColor}
+                onChange={(color) => {
+                    setTasksUITitleColor(color.hexa)
+                }}
+                presetColor={false} //why no work
+            />
         </div>
     )
 }
@@ -116,8 +131,17 @@ export function TasksUI(props) {
     const {todos, setTodos, postData, deleteData} = props
     const { tasksUITitle, tasksUILimit } = props.custom
 
-    const [tasksUIId] = useState(Date.now()) //its in usestate bc it wont reassign value on rerender with just date.now()
+    const [tasksUIId] = useState(UID()) //its in usestate bc it wont reassign value on rerender with just date.now()
     //send this modules id to database
+
+    const [tasksUITitleId] = useState(UID())
+    const [tasksUITitleColor, setTasksUITitleColor] = useState('rgb(227, 227, 227)')
+
+    //changes title color
+    useEffect(() => {
+        const tasksUITitleObj = document.getElementById(tasksUITitleId)
+        tasksUITitleObj.style.background = tasksUITitleColor
+    }, [tasksUITitleColor])
 
     const [tasksUITodos, setTasksUITodos] = useState([])
     //sorts tasksUITodos by date
@@ -127,7 +151,8 @@ export function TasksUI(props) {
         )
     },[todos])
 
-    const [tasksUIStyleLength, setTasksUIStyleLength] = useState(176)
+    const tasksUIStyleInitialLength = 176
+    const [tasksUIStyleLength, setTasksUIStyleLength] = useState(tasksUIStyleInitialLength)
     //updates length of module when todo added
     useEffect(() => {
         if (tasksUITodos.length > 1) {
@@ -145,7 +170,7 @@ export function TasksUI(props) {
     const addTodo = () => {
         if (tasksUITodos.length < tasksUILimit) {
             const todo = {
-                id: Date.now(),
+                id: UID(),
                 name:"",
                 date:"",
                 user_email:"",
@@ -156,11 +181,11 @@ export function TasksUI(props) {
         }
     }
     const deleteTodo = (id) => {
-    const newTodos = todos.filter(todo => {
-            return todo.id !== id
-    })
-        deleteData(id)
+        const newTodos = todos.filter(todo => {
+                return todo.id !== id
+        })
         setTodos(newTodos)
+        deleteData(id)
     }
     const deleteCheckedTodo = (id) => {
         const newCheckedTodos = []
@@ -224,10 +249,13 @@ export function TasksUI(props) {
 
                 showCheckedTasksHistoryState={showCheckedTasksHistoryState}
                 setShowCheckedTasksHistoryState={setShowCheckedTasksHistoryState}
+
+                tasksUITitleColor={tasksUITitleColor}
+                setTasksUITitleColor={setTasksUITitleColor}
             />}
 
             <div className='tasks-ui__title-add-container'>
-                <div className='tasks-ui__title'>
+                <div className='tasks-ui__title' id={tasksUITitleId}>
                     {showCheckedTasksHistoryState ? `${tasksUITitle} | Completed` : tasksUITitle }
                 </div>
                 {!showCheckedTasksHistoryState && 
@@ -268,7 +296,7 @@ export function TasksUI(props) {
 
                         <div className="tasks-ui__todo__date-container">
                             <div className="tasks-ui__todo__date" id={`date-${todo.id}`} onClick={e => showTodoCalendar(todo.id)}>
-                                {todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : ""}
+                                {todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : " empty"}
                             </div>
                             {todo.showTodoCalendarState && <TodoCalendar todo={todo} todos={todos} setTodos={setTodos} />}
                         </div>

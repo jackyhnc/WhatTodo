@@ -28,7 +28,6 @@
     padding-top:6px;
     padding-bottom:6px;
 
-    background-color:rgba(158, 246, 178, 1);
     border-radius:20px;
 
     font-weight: 600;
@@ -182,10 +181,10 @@
     align-items: center;
     height:100%;
 
-    transition: background-color 0.08s ease-in;
+    transition: background-color 0.08s ease;
 }
 .tasks-ui__todo__date:hover{
-    background-color: rgba(0, 119, 255, 0.03);
+    background-color: rgba(0, 119, 255, 0.055);
     border-radius:8px;
 }
 .tasks-ui__todo__date-calendar-false{

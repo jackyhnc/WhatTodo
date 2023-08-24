@@ -1,9 +1,8 @@
 CREATE DATABASE todoapp;
 
 CREATE TABLE todos (
-    id BIGINT PRIMARY KEY,
+    id VARCHAR(20) PRIMARY KEY,
     name VARCHAR(40),
-    showTodoCalendarState BOOL,
     date VARCHAR(300),
     user_email VARCHAR(255)
 );

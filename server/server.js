@@ -32,7 +32,7 @@ app.post("/todos",(req,res) => {
 })
 
 //delete todos
-app.delete("/todos/:id",(req,res) => {
+app.delete("/DeleteTodos/:id",(req,res) => {
     const { id } = req.params
     try {
         pool.query(`DELETE FROM todos WHERE id = $1;`,[id])

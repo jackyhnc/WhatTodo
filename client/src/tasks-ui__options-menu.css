@@ -44,7 +44,7 @@
     padding:6px;
 }
 .tasks-ui__options-menu__delete-button:hover {
-    background-color: rgb(241, 241, 241);
+    background-color: rgb(243, 243, 243);
 }
 .tasks-ui__options-menu__delete-icon {
     width:20px;
@@ -67,9 +67,11 @@
     padding-left:16px;
 
     color:rgb(155, 155, 155);
+
+    transition: background-color 0.08s ease;
 }
 .tasks-ui__options-menu__button-unselected:hover {
-    background-color: rgb(241, 241, 241);
+    background-color: rgba(0, 119, 255, 0.055);
 }
 .tasks-ui__options-menu__button-selected {
     position:relative;
@@ -84,8 +86,8 @@
     box-sizing: border-box;
     padding-left:16px;
 
-    background-color: rgb(235, 235, 235);
-    color:rgb(133, 133, 133);
+    background-color: rgb(223, 222, 222);
+    color:rgb(77, 77, 77);
 }
 
 .checked-tasks-history-container {

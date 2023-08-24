@@ -44,7 +44,7 @@ export default function App() {
 
     const deleteData = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8000/todos/${id}`, {
+            const response = await fetch(`http://localhost:8000/DeleteTodos/${id}`, {
                 method:'DELETE'
             })
         }
@@ -140,7 +140,8 @@ return (
 
                 custom={{
                     tasksUITitle: "Today's Main Tasks",
-                    tasksUILimit: 2
+                    tasksUILimit: 2,
+                    tasksUIColor: 'rgba(158, 246, 178, 1)'
                 }}
             />
             <TasksUI 

@@ -1,5 +1,5 @@
 {
-  "homepage":"https://jackkhc.github.io/WhatTodo/",
+  "homepage": "https://jackkhc.github.io/WhatTodo/",
   "name": "whattodo",
   "private": false,
   "version": "0.0.0",
@@ -20,6 +20,7 @@
     "@mui/x-date-pickers": "^6.9.2",
     "dayjs": "^1.11.9",
     "react": "^18.2.0",
+    "react-color-palette": "^7.0.4",
     "react-dom": "^18.2.0",
     "styled-components": "^5.3.11"
   },
