@@ -7,10 +7,10 @@
 
     width:250px;
     box-sizing:border-box;
-    padding:8px 24px 24px 24px;
+    padding:8px 24px 20px 24px;
 
     background-color: rgb(255, 255, 255);
-    color:rgb(155, 155, 155);
+    color:black;
     border-radius:15px;
     box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
     z-index: 100;
@@ -19,23 +19,21 @@
 .tasks-ui__options-menu__header-container {
     position:relative;
     display:grid;
-    grid-template-columns: 1fr 32px;
-    align-items:center;
+    grid-template-columns:1fr auto auto;
+    align-items: center;
     
     border-bottom-style: solid;
     border-bottom-width:2px;
     border-bottom-color: rgb(230, 230, 230);
 
-    padding-top:6px;
-    padding-bottom:6px;
-    padding-left:2px;
+    padding: 6px 2px 6px 0px;
     margin-bottom:6px;
 }
 
 .tasks-ui__options-menu__title {
-    font-size:14px;
-
     display:inline-block;
+    font-weight: 600;
+    justify-self:left;
 }
 
 .tasks-ui__options-menu__delete-button {
@@ -53,6 +51,21 @@
     transition: opacity 0.2s ease;
 }
 
+.tasks-ui__options-menu__back-button {
+    border-radius: 50px;
+    width:32px;
+    padding:6px;
+}
+.tasks-ui__options-menu__back-button:hover {
+    background-color: rgb(243, 243, 243);
+}
+.tasks-ui__options-menu__back-icon {
+    width:20px;
+
+    vertical-align:middle;
+    transition: opacity 0.2s ease;
+}
+
 .tasks-ui__options-menu__button-unselected {
     position:relative;
 
@@ -64,9 +77,7 @@
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    padding-left:16px;
-
-    color:rgb(155, 155, 155);
+    padding-left:8px;
 
     transition: background-color 0.08s ease;
 }
@@ -86,8 +97,7 @@
     box-sizing: border-box;
     padding-left:16px;
 
-    background-color: rgb(223, 222, 222);
-    color:rgb(77, 77, 77);
+    background-color: rgba(13, 31, 45, 0.1);
 }
 
 .checked-tasks-history-container {
@@ -108,4 +118,26 @@
 
 .checked-tasks-history-container__checkedTodo {
     display:block;
+}
+
+.change-accent-color-menu__button {
+    display:grid;
+    grid-template-columns: 40px 1fr;
+    height:40px;
+    border-radius:15px;
+    
+    align-items:center;
+
+}
+.change-accent-color-menu__button:hover {
+    background-color: rgba(0, 119, 255, 0.055);
+    
+}
+
+.change-accent-color-menu__button__color-icon {
+    height:20px;
+    width:20px;
+    border-radius:5px;
+
+    margin:0 auto;
 }

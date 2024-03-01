@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "if-env TYPE=server && (cd server && npm install) || (cd client && npm install)",
+    "client":"cd client && npm run dev",
+    "server": "./server/server.js",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
@@ -21,7 +23,8 @@
     "dayjs": "^1.11.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "styled-components": "^5.3.11"
+    "styled-components": "^5.3.11",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.14",

@@ -1,13 +1,20 @@
 CREATE DATABASE todoapp;
 
-CREATE TABLE todos (
-    id VARCHAR(20) PRIMARY KEY,
-    name VARCHAR(40),
-    date VARCHAR(300),
-    user_email VARCHAR(255)
-);
-
 CREATE TABLE users (
-    email VARCHAR(255),
+    email VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255),
     hashed_password VARCHAR(255)
 );
+
+CREATE TABLE tasksModules (
+    id VARCHAR(36) PRIMARY KEY,
+    user_email VARCHAR(255),
+    FOREIGN KEY(user_email) REFERENCES users(email),
+
+    title VARCHAR(50),
+    todos_count INT,
+    color VARCHAR(22),
+
+    todos JSON
+);
+
