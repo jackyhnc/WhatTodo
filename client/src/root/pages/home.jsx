@@ -10,21 +10,22 @@ export default function Home() {
     const [tasksModules, setTasksModules] = useState([])
 
     const userEmail = 'grasspatch1@gmail.com'
-
+    
     const getData = async () => {
         try{
             const response = await fetch(`http://localhost:8000/tasksModules/${userEmail}`, {
                 method: 'GET',
             })
             const json = await response.json()
-            setTasksModules(json)
+            setTasksModules(json) //this DOES remove the list todo object, why?
+            console.log(tasksModules)
             console.log('gotten')
-        }catch(err) {
+        } catch(err) {
             console.error(err)
         }
     }
     useEffect(()=>{getData()},[])
-
+    
     const postData = async () => {
         try {
             const response = await fetch('http://localhost:8000/tasksModules/', {
@@ -38,16 +39,17 @@ export default function Home() {
         }
     }
 
+    
     const addTaskModule = () => {
         const newTaskModule = {
             id: uuidv4(),
             user_email: userEmail,
 
-            title:'',
-            todosCountLimit:10,
-            color:'rgb(227, 227, 227)',
+            title:" ",
+            todos_count_limit:10,
+            color:"rgb(227, 227, 227)",
 
-            todos: {}
+            todos: []
         }
         setTasksModules([...tasksModules, newTaskModule])
     }
@@ -57,7 +59,7 @@ export default function Home() {
         <header>
             <img onClick={e => postData()} className="header__hamburger-icon" src="hamburger.svg" alt="Hamburger" />
             <div className="header__title">Summer 2023</div>
-            <button className="header__share-button">Share</button>
+            <button className="header__share-button" onClick={e => getData()}>Share</button>
             <img className="header__profile-picture" src="profile.jpg"/>
         </header>
         <div className="title-container">
@@ -71,16 +73,18 @@ export default function Home() {
         </div>
 
         <main>
-            <nav>
-                <button className="navbar__header-controls--three-dots__container">
-                    <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
-                </button>
+            <nav onClick={e => {
+                console.log(tasksModules)
+            }}>
                 <div className="navbar__header-controls">
                     <div className="navbar__header-controls__sizing-buttons">
                         <button className="navbar__header-controls--red"></button>
                         <button className="navbar__header-controls--yellow"></button>
                         <button className="navbar__header-controls--green"></button>
                     </div>
+                    <button className="navbar__header-controls--three-dots__container">
+                        <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
+                    </button>
                 </div>
                 <div className="navbar__container">
                     <div className="navbar__profile-greeting-section">
@@ -131,6 +135,7 @@ export default function Home() {
             </nav>
             <div className="tasks-modules-container">
                 {tasksModules.map(module => {
+                    console.log(module)
                     return (
                         <div key={module.id}>
                             <TasksUI>
@@ -141,13 +146,12 @@ export default function Home() {
                                     setTasksModules: setTasksModules,
                                     custom: {
                                         tasksUITitle: module.title,
-                                        tasksUILimit: module.todosCountLimit,
+                                        tasksUITodosCountLimit: module.todos_count_limit,
                                         tasksUIColor: module.color
                                     }
                                 }}
                             </TasksUI>
                         </div>
-
                     )
                 })}
             </div>
@@ -155,32 +159,3 @@ export default function Home() {
         </>
     )
 }
-                /*
-                <TasksUI 
-                    todos={todos} 
-                    setTodos={setTodos} 
-                    
-                    postData={postData} 
-                    deleteData={deleteData}
-                    updateData={updateData}
-
-                    custom={{
-                        tasksUITitle: "Today's Main Tasks",
-                        tasksUILimit: 2,
-                        tasksUIColor: 'rgba(158, 246, 178, 1)'
-                    }}
-                />
-                <TasksUI 
-                    todos={todos} 
-                    setTodos={setTodos} 
-                    
-                    postData={postData} 
-                    deleteData={deleteData}
-                    updateData={updateData}
-
-                    custom={{
-                        tasksUITitle: "To Do's",
-                        tasksUILimit: 10
-                    }} 
-                />
-                */

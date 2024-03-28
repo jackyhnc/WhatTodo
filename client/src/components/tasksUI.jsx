@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -10,17 +11,16 @@ import '../tasks-ui__options-menu.css'
 export function TasksUIOptionsMenu(props) {
     let {tasksUIId,tasksModules,setTasksModules,showOptionsMenuState,
         setShowOptionsMenuState,showCheckedTasksHistoryState,
-        setShowCheckedTasksHistoryState    
+        setShowCheckedTasksHistoryState, title, setTitle 
     } = props
 
-    /*delete options menu popup when clicked outside*/
+    /*delete options menu popup when clicked outside 
     useEffect(() => {
         const optionMenu = document.getElementById(`tasks-ui__options-menu-${tasksUIId}`)
         const optionMenuToggleButton = document.getElementById(`three-dots-button-${tasksUIId}`)
         const optionMenuButtons = document.getElementsByClassName('tasks-ui__options-menu__button-unselected')
         const menuDependancies = [optionMenu, ...optionMenuButtons, optionMenuToggleButton]
 
-        /*if anything outside of elements in menuDependancies is clicked, menu goes away*/
         const handleClickOutsideOptionsMenu = (event) => {
             if (!(menuDependancies.some(element => element.contains(event.target)))) {
                 setShowOptionsMenuState(false)
@@ -29,8 +29,9 @@ export function TasksUIOptionsMenu(props) {
 
         window.addEventListener("click",handleClickOutsideOptionsMenu)
         return () => {window.removeEventListener("click",handleClickOutsideOptionsMenu)}
-    },[showOptionsMenuState])
-    /*delete options menu popup on enter keypress*/
+    },[showOptionsMenuState]) */
+
+    /*delete options menu popup on enter keypress
     useEffect(() => {
         const handleEnterKey = (event) => {
             if (event.key === "Enter") {
@@ -41,43 +42,17 @@ export function TasksUIOptionsMenu(props) {
         window.addEventListener("keydown",handleEnterKey)
         return () => {window.removeEventListener("keydown",handleEnterKey)}
     },[showOptionsMenuState])
+    */
 
     const showCheckedTasksHistory = () => {
         setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
     }
 
-    /*const [showColorChangeMenuState,setShowColorChangeMenuState] = useState(false)
-    const showColorChangeMenu = () => {
-        setShowColorChangeMenuState(!showColorChangeMenuState)
-    }*/
-    
-    const [optionsMenuNavigationHistory,setOptionsMenuNavigationHistory] = useState([])
-    const forwardOptionsMenuNavigationHistory = (newPage) => {
-        setOptionsMenuNavigationHistory([...optionsMenuNavigationHistory, newPage])
-    }
-    const backwardsOptionsMenuNavigationHistory = () => {
-        setOptionsMenuNavigationHistory(optionsMenuNavigationHistory.slice(0,-1))
-    }
+    const [tasksUIColorPickerState, setTasksUIColorPickerState] = useState(false)
+    const [tasksUITitleChangerState, setTasksUITitleChangerState] = useState(false)
 
-    /*useEffect(() => {
-        updateOptionsMenuForward()
-    }, [optionsMenuNavigationHistory])*/
-
-    /*const updateOptionsMenuForward = () => {
-        const componentsMap = {
-            'TasksUIOptionsMenu__ChangeAccentColor' : <TasksUIOptionsMenu__ChangeAccentColor/>
-        }
-        const optionsMenu = document.getElementById(`tasks-ui__options-menu-${tasksUIId}`)
-        
-        if (optionsMenuNavigationHistory.length > 0) {
-            const newComponent = componentsMap[optionsMenuNavigationHistory[optionsMenuNavigationHistory.length-1]]
-            hydrateRoot(optionsMenu, newComponent)
-        }
-    }*/
-
-    function TasksUIOptionsMenu__ChangeAccentColor() {
-        
-        const updateTasksUIAccentColor = (selectedColor) => {
+    function TasksUIColorPicker() {
+        const updateTasksUIColor = (selectedColor) => {
             const newTasksModules = tasksModules.map(module => {
                 return module.id === tasksUIId ? {...module, color:selectedColor} : module
             })
@@ -93,52 +68,104 @@ export function TasksUIOptionsMenu(props) {
             'Pink':'rgba(255,213,226,1)',
             'Purple':'rgba(237, 223, 255, 1)'
         }
-        
+
         return (
-            <>
-            <div className="tasks-ui__options-menu__header-container">
-                <div className="tasks-ui__options-menu__title">Colors</div>
-                <button className='tasks-ui__options-menu__back-button' onClick={e => backwardsOptionsMenuNavigationHistory()}>
-                    <img className="tasks-ui__options-menu__back-icon" src='../back icon.svg'></img>
-                </button>
-                <button className="tasks-ui__options-menu__delete-button" onClick={e => setShowOptionsMenuState(!showOptionsMenuState)}>
-                    <img className="tasks-ui__options-menu__delete-icon" src="delete icon.svg"></img>
-                </button>
-            </div>
-            {Object.keys(accentColors).map(color => {
-                return (
-                    <div className="change-accent-color-menu__button" onClick={e => updateTasksUIAccentColor(accentColors[color])} key={color}>
-                        <div className="change-accent-color-menu__button__color-icon" style={{ background: accentColors[color] }}></div>
-                        <div className="change-accent-color-menu__button__text">{color}</div>
+            createPortal(
+                <div className="overlay-background">
+                    <div className="tasks-ui__options-menu__popup">
+                        <div className="tasks-ui__options-menu__header-container">
+                            <div className="tasks-ui__options-menu__title">Colors</div>
+                            <button className='tasks-ui__options-menu__back-button' onClick={e => setTasksUIColorPickerState(!tasksUIColorPickerState)}>
+                                <img className="tasks-ui__options-menu__back-icon" src='../back icon.svg'></img>
+                            </button>
+                        </div>
+                        <div className="change-accent-color-menu">
+                            {Object.keys(accentColors).map(color => {
+                                return (
+                                    <div className="change-accent-color-menu__button" onClick={e => updateTasksUIColor(accentColors[color])} key={color}>
+                                        <div className="change-accent-color-menu__button__color-icon" style={{ background: accentColors[color] }}></div>
+                                        <div className="change-accent-color-menu__button__text">{color}</div>
+                                    </div>
+                                )})
+                            }
+                        </div>
                     </div>
-                )})
-            }
-            </>
+                </div>,
+                document.getElementById("overlays")
+            )
         )
     }
+
+    function TasksUITitleChanger() {
+        const [titleInInputBox, setTitleInInputBox] = useState(title)
+
+        useEffect(() => {
+            const handleEnterKey = (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault()
+                    setTitle(titleInInputBox)
+                }
+            }
     
-    const componentsMap = {
-        'TasksUIOptionsMenu__ChangeAccentColor' : <TasksUIOptionsMenu__ChangeAccentColor/>
+            window.addEventListener("keydown",handleEnterKey)
+            return () => {window.removeEventListener("keydown",handleEnterKey)}
+        })
+
+        return (
+            createPortal(
+                <div className="overlay-background" onClick={e => console.log(titleInInputBox)}>
+                    <div className="tasks-ui__options-menu__popup">
+                        <div className="tasks-ui__options-menu__header-container">
+                            <div className="tasks-ui__options-menu__title">Title</div>
+                            <button className='tasks-ui__options-menu__back-button' onClick={e => setTasksUITitleChangerState(!tasksUITitleChangerState)}>
+                                <img className="tasks-ui__options-menu__back-icon" src='../back icon.svg'></img>
+                            </button>
+                        </div>
+                        <div className="title-changer-menu-input-button-wrapper">
+                            <input className="title-changer-menu-input-box" 
+                                type="text" 
+                                autoFocus 
+                                maxLength="35"
+                                value={titleInInputBox}
+                                onChange={e => setTitleInInputBox(e.target.value)}>
+                            </input>
+                            <button className="title-changer-menu-enter-button" onClick={e => setTitle(titleInInputBox)}>Enter</button>
+                        </div>
+                    </div>
+                </div>,
+                document.getElementById("overlays")
+            )
+        )
     }
 
     return (
-        <div className="tasks-ui__options-menu" id={`tasks-ui__options-menu-${tasksUIId}`}>
-            {componentsMap[optionsMenuNavigationHistory[optionsMenuNavigationHistory.length-1]] 
-                ??
-                <>
+        <>
+            {tasksUIColorPickerState && <TasksUIColorPicker/>}
+            {tasksUITitleChangerState && <TasksUITitleChanger/>}
+            <div className="tasks-ui__options-menu" id={`tasks-ui__options-menu-${tasksUIId}`}>
                     <div className="tasks-ui__options-menu__header-container">
                         <div className="tasks-ui__options-menu__title">Options</div>
                         <button className="tasks-ui__options-menu__delete-button" onClick={e => setShowOptionsMenuState(!showOptionsMenuState)}>
                             <img className="tasks-ui__options-menu__delete-icon" src="delete icon.svg"></img>
                         </button>
                     </div>
-                    <div className={`tasks-ui__options-menu__button-${showCheckedTasksHistoryState ? "selected" : "unselected"}`} onClick={showCheckedTasksHistory}>Completed Tasks</div>
-                    <div className='tasks-ui__options-menu__button-unselected' id={`tasks-ui__options-menu__button-unselected-${tasksUIId}`} 
-                        onClick={e => forwardOptionsMenuNavigationHistory('TasksUIOptionsMenu__ChangeAccentColor')}>Change Accent Color
+                    <div 
+                        className={`tasks-ui__options-menu__button-${showCheckedTasksHistoryState ? "selected" : "unselected"}`} 
+                        onClick={showCheckedTasksHistory}>
+                        Completed Tasks
                     </div>
-                </>
-            }  
-        </div>
+                    <div 
+                        className='tasks-ui__options-menu__button-unselected' 
+                        onClick={e => setTasksUIColorPickerState(!tasksUIColorPickerState)}>
+                        Change Accent Color
+                    </div>
+                    <div 
+                        className='tasks-ui__options-menu__button-unselected' 
+                        onClick={e => setTasksUITitleChangerState(!tasksUITitleChangerState)}>
+                        Change Title
+                    </div>
+            </div>
+        </>
     )
 }
 
@@ -202,64 +229,60 @@ export function TodoCalendar(props) {
 
 export function TasksUI(props) {
     const { tasksUIId, importedTodos, tasksModules, setTasksModules } = props.children
-    const { tasksUITitle, tasksUILimit, tasksUIColor } = props.children.custom
-
+    const { tasksUITitle, tasksUITodosCountLimit, tasksUIColor } = props.children.custom
+    
     const [todos, setTodos] = useState([])
     useEffect(()=>{setTodos(importedTodos)},[])
 
-    //sorts todos date and updates tasksModules todos
-    useEffect(() => {
-        setTodos(todos?.sort((a,b) => {new Date(a.date) - new Date(b.date)}))
+    const [title, setTitle] = useState([])
+    useEffect(()=>{setTitle(tasksUITitle)},[])
+    useEffect(()=>{
+        const updatedTasksModules = tasksModules.map(module => {
+            return module.id === tasksUIId ?
+                {...module, title:title} :
+                module
+        },[title])
+        setTasksModules(updatedTasksModules)
+    },[title])
     
-        const selectedTaskModule = tasksModules.filter(module => {module.id === tasksUIId})
-        
-        const newTasksModules = tasksModules.map(module => {
-            return module === selectedTaskModule ?
-                {...module, todos:todos} : module
+    const tasksUITitleObj = useRef()
+    useEffect(() => {
+        tasksUITitleObj.current.style.background = tasksUIColor
+    },[tasksUIColor])
+
+    useEffect(() => {
+        const updatedDateSortedTodos = todos.sort((a,b) => {
+            return new Date(a.date) - new Date(b.date)
         })
 
-        setTasksModules(newTasksModules)
+        const updatedTasksModules = tasksModules.map(module => {
+            return module.id === tasksUIId ?
+                {...module, todos:updatedDateSortedTodos} : module
+        })
+        setTasksModules(updatedTasksModules)
     },[todos])
 
-    const [title, setTitle] = useState([])
-    useEffect(()=>{setTodos(tasksUITitle)},[])
-
-    const [tasksUITitleId] = useState(uuidv4())
-
-    //changes title color
     useEffect(() => {
-        const tasksUITitleObj = document.getElementById(tasksUITitleId)
-        tasksUITitleObj.style.background = tasksUIColor
-    }, [tasksUIColor])
+        const tasksUIInitialHeight = 176
+        let tasksUIHeight = tasksUIInitialHeight
 
-    const tasksUIStyleInitialLength = 176
-    const [tasksUIStyleLength, setTasksUIStyleLength] = useState(tasksUIStyleInitialLength)
-    //updates length of module when todo added
-    useEffect(() => {
-        if (todos.length > 1) {
-            setTasksUIStyleLength(140 + (todos.length - 1) * 36)
+        if (todos.length > 2) {
+            tasksUIHeight = tasksUIInitialHeight + ((todos.length - 2) * 36)
         }
-    },[todos])
-    useEffect(() => {
+
         const tasksUIObj = document.getElementById(tasksUIId)
-        if (tasksUIObj) {
-            tasksUIObj.style.height = `${tasksUIStyleLength}px`
-        }
-    },[tasksUIStyleLength])
-    
-    console.log(todos)
-    
+        tasksUIObj.style.height = `${tasksUIHeight}px`
+    },[todos.length])
+        
     const addTodo = () => {
-        if (todos.length < tasksUILimit) {
-            const todo = {
+        if (todos.length < tasksUITodosCountLimit) {
+            const newTodo = {
                 id: uuidv4(),
                 isChecked: false,
-                name:"",
-                date:"",
-                user_email:"",
-                moduleId:tasksUIId,
+                name: "",
+                date: "",
             }
-            setTodos([...todos,todo])
+            setTodos([...todos, newTodo])
         }
     }
     const deleteTodo = (id) => {
@@ -308,31 +331,36 @@ export function TasksUI(props) {
 
     return (
         <div className='tasks-ui' id={tasksUIId}>
-            <button className="navbar__header-controls--three-dots__container" id={`three-dots-button-${tasksUIId}`} onClick={showOptionsMenu}>
-                <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
-            </button>
-            {showOptionsMenuState && 
-            <TasksUIOptionsMenu 
-                tasksUIId={tasksUIId}
-                tasksModules={tasksModules}
-                setTasksModules={setTasksModules}
-
-                showOptionsMenuState={showOptionsMenuState} 
-                setShowOptionsMenuState={setShowOptionsMenuState} 
-
-                showCheckedTasksHistoryState={showCheckedTasksHistoryState}
-                setShowCheckedTasksHistoryState={setShowCheckedTasksHistoryState}
-            />}
-
-            <div className='tasks-ui__title-add-container'>
-                <div className='tasks-ui__title' id={tasksUITitleId}>
-                    {showCheckedTasksHistoryState ? `${tasksUITitle} | Completed` : tasksUITitle }
+            <div className='tasks-ui__header-container'>
+                <div className="tasks-ui__title-add-wrapper">
+                    <div className={title ? "tasks-ui__title" : "tasks-ui__no-title"} ref={tasksUITitleObj}>
+                        {showCheckedTasksHistoryState ? (title ? `${title} | Completed` : "No title | Completed") : (title ? title : "No title")}
+                    </div>
+                    {!showCheckedTasksHistoryState && 
+                        <button className='tasks-ui__add-button' onClick={addTodo}>
+                            <img className='tasks-ui__add-icon' src="add icon.svg"></img>
+                        </button>
+                    }
                 </div>
-                {!showCheckedTasksHistoryState && 
-                <button className='tasks-ui__add-button' onClick={addTodo}>
-                    <img className='tasks-ui__add-icon' src="add icon.svg"></img>
+
+                <button className="navbar__header-controls--three-dots__container" id={`three-dots-button-${tasksUIId}`} onClick={showOptionsMenu}>
+                    <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
                 </button>
-                }
+                {showOptionsMenuState && 
+                <TasksUIOptionsMenu 
+                    tasksUIId={tasksUIId}
+                    tasksModules={tasksModules}
+                    setTasksModules={setTasksModules}
+
+                    showOptionsMenuState={showOptionsMenuState} 
+                    setShowOptionsMenuState={setShowOptionsMenuState} 
+
+                    showCheckedTasksHistoryState={showCheckedTasksHistoryState}
+                    setShowCheckedTasksHistoryState={setShowCheckedTasksHistoryState}
+
+                    title={title}
+                    setTitle={setTitle}
+                />}
             </div>
 
             <div className="tasks-ui__names-container">
@@ -346,70 +374,73 @@ export function TasksUI(props) {
                     !checkedTodos.length && <div className="tasks-ui__no-todos-alert">No Completed Todos</div>
                 }
             </div> }
+
             <div className="tasks-ui__todos-container">
-            {!showCheckedTasksHistoryState && todos.map(todo => {
-                return (
-                    <div className="tasks-ui__todo" key={todo.id}>
-                        <button className="tasks-ui__todo__checkbox-container" onClick={e => checkTodo(todo.id)}>
-                            <div className="tasks-ui__todo__checkbox"></div>
-                        </button>
-
-                        <div className="tasks-ui__todo__title-container">
-                            <input className="tasks-ui__todo__title" 
-                                value={todo.name} 
-                                onChange={(e) => handleTodoTitleChange(todo, e.target.value)}
-                                onKeyDown={todoExitOnEnter}
-                                type="text" 
-                                autoComplete="off">
-                            </input>
-                        </div>
-
-                        <div className="tasks-ui__todo__date-container">
-                            <div className="tasks-ui__todo__date" id={`date-${todo.id}`} onClick={e => showTodoCalendar(todo.id)}>
-                                {todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : " empty"}
-                            </div>
-                            {todo.showTodoCalendarState && 
-                                <TodoCalendar 
-                                    todo={todo} 
-                                    todos={todos} 
-                                    setTodos={setTodos} 
-                            />}
-                        </div>
-
-                        <div className="tasks-ui__todo__delete-button-container">
-                            <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
-                                <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
-                            </button>
-                        </div>
-                    </div>
-                    )
-                })}
-            {showCheckedTasksHistoryState && todos.map(todo => {
-                if (todo.isChecked) {
+                {!showCheckedTasksHistoryState && todos.map(todo => {
                     return (
                         <div className="tasks-ui__todo" key={todo.id}>
-                            <button className="tasks-ui__todo__checkbox-container"></button>
-    
+                            <button className="tasks-ui__todo__checkbox-container" onClick={e => checkTodo(todo.id)}>
+                                <div className="tasks-ui__todo__checkbox"></div>
+                            </button>
+
                             <div className="tasks-ui__todo__title-container">
-                                <input className="tasks-ui__todo__title" 
-                                value={todo.name} 
-                                onKeyDown={todoExitOnEnter}
-                                type="text" 
-                                autoComplete="off">
+                                <input className="tasks-ui__todo__title"
+                                    value={todo.name} 
+                                    onChange={(e) => handleTodoTitleChange(todo, e.target.value)}
+                                    onKeyDown={todoExitOnEnter}
+                                    type="text" 
+                                    autoComplete="off">
                                 </input>
                             </div>
-    
+
                             <div className="tasks-ui__todo__date-container">
-                                <div className="tasks-ui__todo__date" id={`date-${todo.id}`}>{todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : ""}</div>
+                                <div className={todo.date ? "tasks-ui__todo__date" : "tasks-ui__todo__no-date"} id={`date-${todo.id}`} onClick={e => showTodoCalendar(todo.id)}>
+                                    {todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : "No date"}
+                                </div>
+                                {todo.showTodoCalendarState && 
+                                    <TodoCalendar 
+                                        todo={todo} 
+                                        todos={todos} 
+                                        setTodos={setTodos} 
+                                />}
                             </div>
-    
-                            <button className="tasks-ui__todo__delete-button" onClick={e => deleteCheckedTodo(todo.id)}>
-                                <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
-                            </button>
+
+                            <div className="tasks-ui__todo__delete-button-container">
+                                <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
+                                    <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
+                                </button>
+                            </div>
                         </div>
-                    )
-                }
-            })}
+                        )
+                    })}
+
+                {/*checked */}
+                {showCheckedTasksHistoryState && todos.map(todo => {
+                    if (todo.isChecked) {
+                        return (
+                            <div className="tasks-ui__todo" key={todo.id}>
+                                <button className="tasks-ui__todo__checkbox-container"></button>
+        
+                                <div className="tasks-ui__todo__title-container">
+                                    <input className="tasks-ui__todo__title" 
+                                    value={todo.name} 
+                                    onKeyDown={todoExitOnEnter}
+                                    type="text" 
+                                    autoComplete="off">
+                                    </input>
+                                </div>
+        
+                                <div className="tasks-ui__todo__date-container">
+                                    <div className="tasks-ui__todo__date" id={`date-${todo.id}`}>{todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : ""}</div>
+                                </div>
+        
+                                <button className="tasks-ui__todo__delete-button" onClick={e => deleteCheckedTodo(todo.id)}>
+                                    <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
+                                </button>
+                            </div>
+                        )
+                    }
+                })}
             </div>
         </div>
     )

@@ -35,10 +35,29 @@
 
     vertical-align:middle;
 }
+.tasks-ui__no-title {
+    margin:0;
+    display:inline-block;
 
-.tasks-ui__title-add-container {
+    padding-left:18px;
+    padding-right:18px;
+    padding-top:6px;
+    padding-bottom:6px;
+
+    border-radius:20px;
+
+    font-weight: 500;
+    font-size:18px;
+    color:rgb(58, 58, 58);
+
+    vertical-align:middle;
+}
+
+.tasks-ui__header-container {
     display:flex;
     align-items:center;
+    justify-content: space-between;
+
 }
 .tasks-ui__add-button {
     height:32px;
@@ -141,19 +160,25 @@
 }
 
 .tasks-ui__todo__title-container {
+    display: flex;
+    align-items: center;
+
     position: relative;
+    height:100%;
 }
 .tasks-ui__todo__title{
-    display: flex;
-    align-self: center;
     border:0;
-
+    height:100%;
+    width:90%;
     text-overflow: ellipsis;
 
     font-weight:500;
 
-    transition:box-shadow 0.2s ease;
-    transition: padding 0.2s ease;
+    transition: box-shadow 0.2s ease, padding 0.2s ease, background-color 0.08s ease; 
+}
+.tasks-ui__todo__title:hover{
+    background-color: rgba(0, 119, 255, 0.055);
+    border-radius:8px;
 }
 .tasks-ui__todo__title:focus {
     position: absolute;
@@ -171,10 +196,26 @@
 
     padding:8px 0px 8px 8px;
 }
+.tasks-ui__todo__title:hover:focus {
+    background: white;
+}
 
 .tasks-ui__todo__date-container{
     position:relative;
     height:100%;
+}
+.tasks-ui__todo__no-date{
+    display: flex;
+    align-items: center;
+    height:100%;
+    color: rgba(117,117,117,255);
+
+    transition: background-color 0.08s ease, padding 0.2s ease;
+}
+.tasks-ui__todo__no-date:hover{
+    background: rgba(0, 119, 255, 0.055);
+    border-radius:8px;
+    padding-left: 4px;
 }
 .tasks-ui__todo__date{
     display: flex;
@@ -184,7 +225,7 @@
     transition: background-color 0.08s ease;
 }
 .tasks-ui__todo__date:hover{
-    background-color: rgba(0, 119, 255, 0.055);
+    background: rgba(0, 119, 255, 0.055);
     border-radius:8px;
 }
 .tasks-ui__todo__date-calendar-false{

@@ -12,7 +12,7 @@ CREATE TABLE tasksModules (
     FOREIGN KEY(user_email) REFERENCES users(email),
 
     title VARCHAR(50),
-    todos_count INT,
+    todos_count_limit INT,
     color VARCHAR(22),
 
     todos JSON

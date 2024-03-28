@@ -29,6 +29,11 @@ nav:hover {
 .navbar__header-controls {
     max-width:100%;
     height:46px;
+    padding: 0 16px 0 16px;
+
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
 
     position:relative;
 }
@@ -38,7 +43,6 @@ nav:hover {
     gap:12px;
 
     height:100%;
-    padding-left:16px;
 
     place-items: center;
 }
@@ -70,11 +74,6 @@ nav:hover {
     background-color:rgb(104, 204, 86);
 }
 .navbar__header-controls--three-dots__container {
-    position:absolute;
-    right:12px;
-    top:8px;
-    z-index: 10;
-
     padding:0px;
     border-width:0px;
 
