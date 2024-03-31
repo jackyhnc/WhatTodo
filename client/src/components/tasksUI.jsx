@@ -31,19 +31,6 @@ export function TasksUIOptionsMenu(props) {
         return () => {window.removeEventListener("click",handleClickOutsideOptionsMenu)}
     },[showOptionsMenuState]) */
 
-    /*delete options menu popup on enter keypress
-    useEffect(() => {
-        const handleEnterKey = (event) => {
-            if (event.key === "Enter") {
-                setShowOptionsMenuState(!showOptionsMenuState)
-            }
-        }
-
-        window.addEventListener("keydown",handleEnterKey)
-        return () => {window.removeEventListener("keydown",handleEnterKey)}
-    },[showOptionsMenuState])
-    */
-
     const showCheckedTasksHistory = () => {
         setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
     }
@@ -113,7 +100,7 @@ export function TasksUIOptionsMenu(props) {
 
         return (
             createPortal(
-                <div className="overlay-background" onClick={e => console.log(titleInInputBox)}>
+                <div className="overlay-background">
                     <div className="tasks-ui__options-menu__popup">
                         <div className="tasks-ui__options-menu__header-container">
                             <div className="tasks-ui__options-menu__title">Title</div>
@@ -151,7 +138,7 @@ export function TasksUIOptionsMenu(props) {
                     </div>
                     <div 
                         className={`tasks-ui__options-menu__button-${showCheckedTasksHistoryState ? "selected" : "unselected"}`} 
-                        onClick={showCheckedTasksHistory}>
+                        onClick={e => showCheckedTasksHistory()}>
                         Completed Tasks
                     </div>
                     <div 
@@ -233,6 +220,14 @@ export function TasksUI(props) {
     
     const [todos, setTodos] = useState([])
     useEffect(()=>{setTodos(importedTodos)},[])
+    useEffect(()=>{
+        const updatedTasksModules = tasksModules.map(module => {
+            return module.id === tasksUIId ?
+                {...module, todos:todos} : module
+        })
+        
+        setTasksModules(updatedTasksModules)
+    },[todos])
 
     const [title, setTitle] = useState([])
     useEffect(()=>{setTitle(tasksUITitle)},[])
@@ -241,7 +236,7 @@ export function TasksUI(props) {
             return module.id === tasksUIId ?
                 {...module, title:title} :
                 module
-        },[title])
+        })
         setTasksModules(updatedTasksModules)
     },[title])
     
@@ -249,30 +244,6 @@ export function TasksUI(props) {
     useEffect(() => {
         tasksUITitleObj.current.style.background = tasksUIColor
     },[tasksUIColor])
-
-    useEffect(() => {
-        const updatedDateSortedTodos = todos.sort((a,b) => {
-            return new Date(a.date) - new Date(b.date)
-        })
-
-        const updatedTasksModules = tasksModules.map(module => {
-            return module.id === tasksUIId ?
-                {...module, todos:updatedDateSortedTodos} : module
-        })
-        setTasksModules(updatedTasksModules)
-    },[todos])
-
-    useEffect(() => {
-        const tasksUIInitialHeight = 176
-        let tasksUIHeight = tasksUIInitialHeight
-
-        if (todos.length > 2) {
-            tasksUIHeight = tasksUIInitialHeight + ((todos.length - 2) * 36)
-        }
-
-        const tasksUIObj = document.getElementById(tasksUIId)
-        tasksUIObj.style.height = `${tasksUIHeight}px`
-    },[todos.length])
         
     const addTodo = () => {
         if (todos.length < tasksUITodosCountLimit) {
@@ -310,19 +281,70 @@ export function TasksUI(props) {
         setTodos(newTodos)
     }
 
-    const [checkedTodos, setCheckedTodos] = useState([])
-    const [showCheckedTasksHistoryState,setShowCheckedTasksHistoryState] = useState(false)
-    const checkTodo = (id) => {
-        const newTodos = []
-        todos.map(todo => {
-            if (todo.id !== id) {
-                newTodos.push(todo)
-            } else {
-                setCheckedTodos([...checkedTodos,todo])
-            }
+    const [uncheckedTodos, setUncheckedTodos] = useState([])
+    useEffect(() => {
+        const updatedUncheckedTodos = todos.filter(todo => {
+            return todo.isChecked === false
         })
-        setTodos(newTodos)
+        setUncheckedTodos(updatedUncheckedTodos)
+    },[todos])
+
+    useEffect(() => {
+        const updatedDateSortedUncheckedTodos = uncheckedTodos.sort((a,b) => {
+            return new Date(a.date) - new Date(b.date)
+        })
+
+        setUncheckedTodos(updatedDateSortedUncheckedTodos)
+    },[uncheckedTodos])
+
+    const [checkedTodos, setCheckedTodos] = useState([])
+    useEffect(() => {
+        const updatedCheckedTodos = todos.filter(todo => {
+            return todo.isChecked === true
+        })
+        setCheckedTodos(updatedCheckedTodos)
+    },[todos])
+
+    useEffect(() => {
+        const updatedDateSortedCheckedTodos = checkedTodos.sort((a,b) => {
+            return new Date(a.date) - new Date(b.date)
+        })
+        
+        setCheckedTodos(updatedDateSortedCheckedTodos)
+    },[checkedTodos])
+
+    const [showCheckedTasksHistoryState, setShowCheckedTasksHistoryState] = useState(false)
+    const checkTodo = (id) => {
+        const updatedTodos = todos.map(todo => {
+            return todo.id === id ?
+                {...todo, isChecked:true} :
+                todo
+        })
+        setTodos(updatedTodos)
     }
+    const uncheckTodo = (id) => {
+        const updatedTodos = todos.map(todo => {
+            return todo.id === id ?
+                {...todo, isChecked:false} :
+                todo
+        })
+        setTodos(updatedTodos)
+    }
+
+    useEffect(() => {
+        const tasksUIInitialHeight = 176
+        let tasksUIHeight = tasksUIInitialHeight
+
+        if (!showCheckedTasksHistoryState && uncheckedTodos.length > 2) {
+            tasksUIHeight = tasksUIInitialHeight + ((uncheckedTodos.length - 2) * 36)
+        }
+        if (showCheckedTasksHistoryState && checkedTodos.length > 2) {
+            tasksUIHeight = tasksUIInitialHeight + ((checkedTodos.length - 2) * 36)
+        }
+
+        const tasksUIObj = document.getElementById(tasksUIId)
+        tasksUIObj.style.height = `${tasksUIHeight}px`
+    },[uncheckedTodos.length,checkedTodos.length])
 
     const [showOptionsMenuState,setShowOptionsMenuState] = useState(false)
     const showOptionsMenu = () => {
@@ -337,7 +359,7 @@ export function TasksUI(props) {
                         {showCheckedTasksHistoryState ? (title ? `${title} | Completed` : "No title | Completed") : (title ? title : "No title")}
                     </div>
                     {!showCheckedTasksHistoryState && 
-                        <button className='tasks-ui__add-button' onClick={addTodo}>
+                        <button className='tasks-ui__add-button' onClick={e => addTodo()}>
                             <img className='tasks-ui__add-icon' src="add icon.svg"></img>
                         </button>
                     }
@@ -368,15 +390,19 @@ export function TasksUI(props) {
                 <div className="tasks-ui__names-container--date">Date</div>
             </div>
 
-            {!todos.length && <div className="tasks-ui__main-container">
-                {!showCheckedTasksHistoryState ? 
-                    !todos.length && <div className="tasks-ui__no-todos-alert">No Todos</div> : 
-                    !checkedTodos.length && <div className="tasks-ui__no-todos-alert">No Completed Todos</div>
-                }
-            </div> }
+            {!showCheckedTasksHistoryState && !uncheckedTodos.length &&
+                <div className="tasks-ui__main-container">
+                    <div className="tasks-ui__no-todos-alert">No Todos</div>
+                </div>
+            }
+            {showCheckedTasksHistoryState && !checkedTodos.length &&
+                <div className="tasks-ui__main-container">
+                    <div className="tasks-ui__no-todos-alert">No Completed Todos</div>
+                </div>
+            }
 
             <div className="tasks-ui__todos-container">
-                {!showCheckedTasksHistoryState && todos.map(todo => {
+                {!showCheckedTasksHistoryState && uncheckedTodos.map(todo => {
                     return (
                         <div className="tasks-ui__todo" key={todo.id}>
                             <button className="tasks-ui__todo__checkbox-container" onClick={e => checkTodo(todo.id)}>
@@ -411,35 +437,38 @@ export function TasksUI(props) {
                                 </button>
                             </div>
                         </div>
-                        )
-                    })}
+                    )
+                })}
 
                 {/*checked */}
-                {showCheckedTasksHistoryState && todos.map(todo => {
-                    if (todo.isChecked) {
-                        return (
-                            <div className="tasks-ui__todo" key={todo.id}>
-                                <button className="tasks-ui__todo__checkbox-container"></button>
-        
-                                <div className="tasks-ui__todo__title-container">
-                                    <input className="tasks-ui__todo__title" 
-                                    value={todo.name} 
-                                    onKeyDown={todoExitOnEnter}
-                                    type="text" 
-                                    autoComplete="off">
-                                    </input>
+                {showCheckedTasksHistoryState && checkedTodos.map(todo => {
+                    return (
+                        <div className="tasks-ui__todo" key={todo.id}>
+                            <div className="tasks-ui__todo__uncheckbox-container">
+                                <button className="tasks-ui__todo__uncheckbox" onClick={e => uncheckTodo(todo.id)}>
+                                    <img className="tasks-ui__todo__uncheckbox-img" src="updates.svg"></img>
+                                </button>
+                            </div>
+
+                            <div className="tasks-ui__todo__title-container">
+                                <div className="tasks-ui__todo__title">
+                                    <div className="tasks-ui__completed-todo__title-text">{todo.name}</div>
                                 </div>
-        
-                                <div className="tasks-ui__todo__date-container">
-                                    <div className="tasks-ui__todo__date" id={`date-${todo.id}`}>{todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : ""}</div>
+                            </div>
+
+                            <div className="tasks-ui__todo__date-container">
+                                <div className={todo.date ? "tasks-ui__todo__date" : "tasks-ui__todo__no-date"} id={`date-${todo.id}`}>
+                                    {todo.date ? dayjs(todo.date).format('dddd, MMM D, YYYY') : "No date"}
                                 </div>
-        
-                                <button className="tasks-ui__todo__delete-button" onClick={e => deleteCheckedTodo(todo.id)}>
+                            </div>
+
+                            <div className="tasks-ui__todo__delete-button-container">
+                                <button className="tasks-ui__todo__delete-button" onClick={e => deleteTodo(todo.id)}>
                                     <img className="tasks-ui__todo__delete-icon" src="delete icon.svg"></img>
                                 </button>
                             </div>
-                        )
-                    }
+                        </div>
+                    )
                 })}
             </div>
         </div>

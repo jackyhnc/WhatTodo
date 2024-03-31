@@ -159,10 +159,32 @@
     box-shadow: inset -5px 5px 5px -5px rgba(0, 0, 0, 0.25);
 }
 
-.tasks-ui__todo__title-container {
-    display: flex;
-    align-items: center;
+.tasks-ui__todo__uncheckbox-container{
+    display:flex;
+    justify-content: center;
 
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.tasks-ui__todo__uncheckbox{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+.tasks-ui__todo__uncheckbox:hover {
+    background-color: rgb(241, 241, 241);
+    border-radius:15px;
+}
+.tasks-ui__todo__uncheckbox-img{
+    width:20px;
+    padding:6px;
+    cursor: pointer;
+}
+.tasks-ui__todos-container:hover .tasks-ui__todo__uncheckbox-container{
+    opacity: 1;
+}
+
+.tasks-ui__todo__title-container {
     position: relative;
     height:100%;
 }
@@ -171,14 +193,19 @@
     height:100%;
     width:90%;
     text-overflow: ellipsis;
-
     font-weight:500;
+
+    display: flex;
+    align-items: center;
 
     transition: box-shadow 0.2s ease, padding 0.2s ease, background-color 0.08s ease; 
 }
 .tasks-ui__todo__title:hover{
     background-color: rgba(0, 119, 255, 0.055);
     border-radius:8px;
+    
+    padding-left:4px;
+    cursor: pointer;
 }
 .tasks-ui__todo__title:focus {
     position: absolute;
@@ -187,6 +214,7 @@
     transform: translateY(-50%);
 
     outline:0;
+    cursor:text;
     box-shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
     border-radius:4px;
     caret-color:black;
@@ -198,6 +226,9 @@
 }
 .tasks-ui__todo__title:hover:focus {
     background: white;
+}
+.tasks-ui__completed-todo__title-text{
+    font-weight:500;
 }
 
 .tasks-ui__todo__date-container{
@@ -216,17 +247,22 @@
     background: rgba(0, 119, 255, 0.055);
     border-radius:8px;
     padding-left: 4px;
+
+    cursor: pointer;
 }
 .tasks-ui__todo__date{
     display: flex;
     align-items: center;
     height:100%;
 
-    transition: background-color 0.08s ease;
+    transition: background-color 0.08s ease, padding 0.2s ease;
 }
 .tasks-ui__todo__date:hover{
     background: rgba(0, 119, 255, 0.055);
     border-radius:8px;
+
+    padding-left: 4px;
+    cursor: pointer;
 }
 .tasks-ui__todo__date-calendar-false{
     position:absolute;

@@ -22,11 +22,11 @@ app.get("/tasksModules/:userEmail", async (req, res) => {
 })
 
 //send data to database
-app.post("/tasksModules",(req,res) => {
-    const tasksModules = req.body
-    console.log(tasksModules)
-    try {        
-        tasksModules.map(taskModule => {
+app.post("/tasksModules", async (req,res) => {
+    try {
+        console.log('trigger')
+        const tasksModules = req.body
+        const newTasksModules = await tasksModules.map(taskModule => {
             const { id, user_email, title, todos_count_limit, color, todos } = taskModule
             pool.query(
                 `INSERT INTO tasksModules(id, user_email, title, todos_count_limit, color, todos) 
@@ -40,6 +40,7 @@ app.post("/tasksModules",(req,res) => {
                         todos = EXCLUDED.todos;`
             ,[id, user_email, title, todos_count_limit, color, JSON.stringify(todos)])
         })
+
         console.log('added')
     }
     catch(error) {

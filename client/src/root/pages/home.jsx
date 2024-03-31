@@ -17,8 +17,7 @@ export default function Home() {
                 method: 'GET',
             })
             const json = await response.json()
-            setTasksModules(json) //this DOES remove the list todo object, why?
-            console.log(tasksModules)
+            setTasksModules(json)
             console.log('gotten')
         } catch(err) {
             console.error(err)
@@ -28,7 +27,7 @@ export default function Home() {
     
     const postData = async () => {
         try {
-            const response = await fetch('http://localhost:8000/tasksModules/', {
+            const response = await fetch(`${process.env.WHATTODO_SERVERURL}/tasksModules/`, {
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
                 body: JSON.stringify(tasksModules)
@@ -38,7 +37,9 @@ export default function Home() {
             console.error(err)
         }
     }
-
+    useEffect(()=>{
+        postData() //shit stops sending again after like 10s
+    },[tasksModules])
     
     const addTaskModule = () => {
         const newTaskModule = {
@@ -73,9 +74,7 @@ export default function Home() {
         </div>
 
         <main>
-            <nav onClick={e => {
-                console.log(tasksModules)
-            }}>
+            <nav>
                 <div className="navbar__header-controls">
                     <div className="navbar__header-controls__sizing-buttons">
                         <button className="navbar__header-controls--red"></button>
@@ -135,7 +134,6 @@ export default function Home() {
             </nav>
             <div className="tasks-modules-container">
                 {tasksModules.map(module => {
-                    console.log(module)
                     return (
                         <div key={module.id}>
                             <TasksUI>

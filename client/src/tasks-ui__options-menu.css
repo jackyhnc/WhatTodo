@@ -73,6 +73,7 @@
     height:40px;
 
     border-radius:15px;
+    cursor: pointer;
 
     display: flex;
     align-items: center;
@@ -83,6 +84,7 @@
 }
 .tasks-ui__options-menu__button-unselected:hover {
     background-color: rgba(0, 119, 255, 0.055);
+    cursor: pointer;
 }
 .tasks-ui__options-menu__button-selected {
     position:relative;
@@ -98,6 +100,7 @@
     padding-left:16px;
 
     background-color: rgba(13, 31, 45, 0.1);
+    cursor: pointer;
 }
 
 .checked-tasks-history-container {
