@@ -7,10 +7,13 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Added
 node_modules
 dist
 dist-ssr
 *.local
+.env
+.gitignore
 
 # Editor directories and files
 .vscode/*
@@ -22,5 +25,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-.env

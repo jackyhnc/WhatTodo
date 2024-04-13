@@ -5,31 +5,14 @@ import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
-import '../tasks-ui.css'
-import '../tasks-ui__options-menu.css'
+import './tasks-ui.css'
+import './tasks-ui__options-menu.css'
 
 export function TasksUIOptionsMenu(props) {
     let {tasksUIId,tasksModules,setTasksModules,showOptionsMenuState,
         setShowOptionsMenuState,showCheckedTasksHistoryState,
         setShowCheckedTasksHistoryState, title, setTitle 
     } = props
-
-    /*delete options menu popup when clicked outside 
-    useEffect(() => {
-        const optionMenu = document.getElementById(`tasks-ui__options-menu-${tasksUIId}`)
-        const optionMenuToggleButton = document.getElementById(`three-dots-button-${tasksUIId}`)
-        const optionMenuButtons = document.getElementsByClassName('tasks-ui__options-menu__button-unselected')
-        const menuDependancies = [optionMenu, ...optionMenuButtons, optionMenuToggleButton]
-
-        const handleClickOutsideOptionsMenu = (event) => {
-            if (!(menuDependancies.some(element => element.contains(event.target)))) {
-                setShowOptionsMenuState(false)
-            }
-        }
-
-        window.addEventListener("click",handleClickOutsideOptionsMenu)
-        return () => {window.removeEventListener("click",handleClickOutsideOptionsMenu)}
-    },[showOptionsMenuState]) */
 
     const showCheckedTasksHistory = () => {
         setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
@@ -214,7 +197,7 @@ export function TodoCalendar(props) {
     )
 }
 
-export function TasksUI(props) {
+export default function TasksUI(props) {
     const { tasksUIId, importedTodos, tasksModules, setTasksModules } = props.children
     const { tasksUITitle, tasksUITodosCountLimit, tasksUIColor } = props.children.custom
     
@@ -229,7 +212,7 @@ export function TasksUI(props) {
         setTasksModules(updatedTasksModules)
     },[todos])
 
-    const [title, setTitle] = useState([])
+    const [title, setTitle] = useState("")
     useEffect(()=>{setTitle(tasksUITitle)},[])
     useEffect(()=>{
         const updatedTasksModules = tasksModules.map(module => {
@@ -286,32 +269,24 @@ export function TasksUI(props) {
         const updatedUncheckedTodos = todos.filter(todo => {
             return todo.isChecked === false
         })
-        setUncheckedTodos(updatedUncheckedTodos)
-    },[todos])
-
-    useEffect(() => {
-        const updatedDateSortedUncheckedTodos = uncheckedTodos.sort((a,b) => {
+        const dateSortedUpdatedUncheckedTodos = updatedUncheckedTodos.sort((a,b) => {
             return new Date(a.date) - new Date(b.date)
         })
 
-        setUncheckedTodos(updatedDateSortedUncheckedTodos)
-    },[uncheckedTodos])
+        setUncheckedTodos(dateSortedUpdatedUncheckedTodos)
+    },[todos])
 
     const [checkedTodos, setCheckedTodos] = useState([])
     useEffect(() => {
         const updatedCheckedTodos = todos.filter(todo => {
             return todo.isChecked === true
         })
-        setCheckedTodos(updatedCheckedTodos)
-    },[todos])
-
-    useEffect(() => {
-        const updatedDateSortedCheckedTodos = checkedTodos.sort((a,b) => {
+        const dateSortedUpdatedCheckedTodos = updatedCheckedTodos.sort((a,b) => {
             return new Date(a.date) - new Date(b.date)
         })
-        
-        setCheckedTodos(updatedDateSortedCheckedTodos)
-    },[checkedTodos])
+
+        setCheckedTodos(dateSortedUpdatedCheckedTodos)
+    },[todos])
 
     const [showCheckedTasksHistoryState, setShowCheckedTasksHistoryState] = useState(false)
     const checkTodo = (id) => {
@@ -331,20 +306,21 @@ export function TasksUI(props) {
         setTodos(updatedTodos)
     }
 
+    const tasksUIInitialHeight = 176
+    const [tasksUIHeight, setTasksUIHeight] = useState(tasksUIInitialHeight)
     useEffect(() => {
-        const tasksUIInitialHeight = 176
-        let tasksUIHeight = tasksUIInitialHeight
-
         if (!showCheckedTasksHistoryState && uncheckedTodos.length > 2) {
-            tasksUIHeight = tasksUIInitialHeight + ((uncheckedTodos.length - 2) * 36)
+            setTasksUIHeight(tasksUIInitialHeight + ((uncheckedTodos.length - 2) * 36))
+        } else if (showCheckedTasksHistoryState && checkedTodos.length > 2) {
+            setTasksUIHeight(tasksUIInitialHeight + ((checkedTodos.length - 2) * 36))
+        } else {
+            setTasksUIHeight(tasksUIInitialHeight)
         }
-        if (showCheckedTasksHistoryState && checkedTodos.length > 2) {
-            tasksUIHeight = tasksUIInitialHeight + ((checkedTodos.length - 2) * 36)
-        }
-
+    },[uncheckedTodos,checkedTodos,showCheckedTasksHistoryState])
+    useEffect(() => {
         const tasksUIObj = document.getElementById(tasksUIId)
         tasksUIObj.style.height = `${tasksUIHeight}px`
-    },[uncheckedTodos.length,checkedTodos.length])
+    },[tasksUIHeight])
 
     const [showOptionsMenuState,setShowOptionsMenuState] = useState(false)
     const showOptionsMenu = () => {

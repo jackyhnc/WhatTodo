@@ -9,10 +9,13 @@ app.use(express.json())
 
 //get data from database 
 app.get("/tasksModules/:userEmail", async (req, res) => {
-    const { userEmail } = req.params
     try {
+        const { userEmail } = req.params
+
         const selectedTasksModules = await pool.query(
-            `SELECT * FROM tasksModules WHERE user_email = $1;`,[userEmail])
+            `SELECT * FROM tasksModules WHERE user_email = $1;`,[userEmail]
+        )
+        console.log(selectedTasksModules)
         res.send(selectedTasksModules.rows)
 
         console.log('gotten')
@@ -24,7 +27,6 @@ app.get("/tasksModules/:userEmail", async (req, res) => {
 //send data to database
 app.post("/tasksModules", async (req,res) => {
     try {
-        console.log('trigger')
         const tasksModules = req.body
         const newTasksModules = await tasksModules.map(taskModule => {
             const { id, user_email, title, todos_count_limit, color, todos } = taskModule
@@ -41,11 +43,11 @@ app.post("/tasksModules", async (req,res) => {
             ,[id, user_email, title, todos_count_limit, color, JSON.stringify(todos)])
         })
 
-        console.log('added')
+        console.log('updated')
     }
     catch(error) {
         console.error(error)
     }
 })
-//shit is not accepting the JSON im passing into the db idk why check errors
+
 app.listen(PORT, ()=> console.log(`Server running on PORT ${PORT}`))

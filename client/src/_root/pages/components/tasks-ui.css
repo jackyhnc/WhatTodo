@@ -19,6 +19,7 @@
 .tasks-ui:hover {
     box-shadow:2px 3px 17px -1px rgb(0, 54, 135, 0.3);
 }
+
 .tasks-ui__title {
     margin:0;
     display:inline-block;
@@ -52,7 +53,10 @@
 
     vertical-align:middle;
 }
-
+.tasks-ui__title-add-wrapper {
+    display: flex;
+    align-items: center;
+}
 .tasks-ui__header-container {
     display:flex;
     align-items:center;

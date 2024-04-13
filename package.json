@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "if-env TYPE=server && (cd server && npm install) || (cd client && npm install)",
-    "client":"cd client && npm run dev",
+    "client": "cd client && npm run dev",
     "server": "./server/server.js",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",

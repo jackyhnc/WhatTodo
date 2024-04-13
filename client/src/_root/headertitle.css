@@ -1,4 +1,4 @@
-header {
+.home-header {
     height: 48px;
     width:100%;
 
@@ -83,7 +83,7 @@ header {
     object-position:50% 60%;
 }
 
-h1 {
+.asf {
     position:absolute;
     bottom:0px;
     left:110px;
