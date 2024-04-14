@@ -341,9 +341,11 @@ export default function TasksUI(props) {
                     }
                 </div>
 
-                <button className="navbar__header-controls--three-dots__container" id={`three-dots-button-${tasksUIId}`} onClick={showOptionsMenu}>
-                    <img className="navbar__header-controls--three-dots-svg" src="three dots.svg"/>
-                </button>
+                <div className="flex flex-row-reverse" id={`three-dots-button-${tasksUIId}`} onClick={showOptionsMenu}>
+                    <div className="p-[6px] hover:bg-[rgb(243,243,243)] rounded-full hover:cursor-pointer">
+                        <img className="w-5 h-5" src="three dots.svg"></img>
+                    </div>
+                </div>
                 {showOptionsMenuState && 
                 <TasksUIOptionsMenu 
                     tasksUIId={tasksUIId}
@@ -427,9 +429,7 @@ export default function TasksUI(props) {
                             </div>
 
                             <div className="tasks-ui__todo__title-container">
-                                <div className="tasks-ui__todo__title">
-                                    <div className="tasks-ui__completed-todo__title-text">{todo.name}</div>
-                                </div>
+                                <input className="tasks-ui__todo__title" value={todo.name}></input>
                             </div>
 
                             <div className="tasks-ui__todo__date-container">

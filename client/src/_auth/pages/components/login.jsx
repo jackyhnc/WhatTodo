@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { UserAuth } from '../../../contexts/AuthContext'
-import { Link } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 export default function Login() {
+    const navigate = useNavigate()
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [errMsg, setErrMsg] = useState("")
@@ -24,7 +26,7 @@ export default function Login() {
             e.preventDefault()
 
             await login(email, password);
-            <Navigate to={"/login"}/>
+            navigate("/loggedin/home")
         } catch(err) {
             setErrMsg(err.message)
             console.error(err)
@@ -40,7 +42,6 @@ export default function Login() {
                     placeholder="Email"
                     onChange={e => setEmail(e.target.value)}
                     ref={emailRef}
-                    autoComplete='on'
                 ></input>
                 <input className="w-full h-12 rounded-lg pl-4 border-2 border-slate-400 outline-amber-200"
                     placeholder="Password"

@@ -21,6 +21,7 @@ export default function LandingPage(){
                             <i className="fa-solid fa-arrow-right h-fit"></i>
                         </div>
                     </Link>
+                    
                 </div>
 
                 <div className="grid grid-cols-[1.5fr,1fr] w-full gap-6">

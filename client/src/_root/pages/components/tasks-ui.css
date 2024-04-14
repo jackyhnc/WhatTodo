@@ -2,15 +2,15 @@
     position:relative;
     display:flex;
     flex-direction: column;
-    max-Width:630px;
-    min-Width:610px;
+    width:540px;
 
     background-Color:white;
     height:176px;
+    font-size: 14px;
 
     box-Sizing:border-box;
 
-    padding:14px 24px 0px 24px;
+    padding:14px 16px 14px 16px;
 
     border-Radius:25px;
     box-Shadow:1px 1px 10px -1px rgb(0, 54, 135, 0.3);
@@ -32,7 +32,7 @@
     border-radius:20px;
 
     font-weight: 600;
-    font-size:18px;
+    font-size:16px;
 
     vertical-align:middle;
 }
@@ -48,7 +48,7 @@
     border-radius:20px;
 
     font-weight: 500;
-    font-size:18px;
+    font-size:16px;
     color:rgb(58, 58, 58);
 
     vertical-align:middle;
@@ -95,14 +95,16 @@
 
 .tasks-ui__names-container {
     display:grid;
-    grid-template-columns: 1.2fr 1fr;
+    grid-template-columns: 1fr 1fr;
 
     width:100%;
 
     box-sizing:border-box;
-    padding-left:60px;
-    padding-right:64px;
+
     margin-top:20px;
+    padding-left:60px;
+    padding-right:50px;
+    font-size: 14px;
 }
 .tasks-ui__names-container--title, .tasks-ui__names-container--date {
     display:inline-block;
@@ -140,9 +142,9 @@
 
 .tasks-ui__todo {
     display:grid;
-    grid-template-columns: 60px 1.2fr 1fr 64px;
+    
+    grid-template-columns: 60px 1fr 1fr 50px;
 
-    width:100%;
     height:36px;
     align-items: center;
 
@@ -195,9 +197,10 @@
 .tasks-ui__todo__title{
     border:0;
     height:100%;
-    width:90%;
+    width:95%;
     text-overflow: ellipsis;
     font-weight:500;
+    font-size: 14px;
 
     display: flex;
     align-items: center;
@@ -244,6 +247,7 @@
     align-items: center;
     height:100%;
     color: rgba(117,117,117,255);
+    font-size: 14px;
 
     transition: background-color 0.08s ease, padding 0.2s ease;
 }
@@ -258,6 +262,7 @@
     display: flex;
     align-items: center;
     height:100%;
+    font-size: 14px;
 
     transition: background-color 0.08s ease, padding 0.2s ease;
 }
@@ -293,6 +298,8 @@
     position:relative;
     width:100%;
     height:100%;
+    display: flex;
+    align-items: center;
 }
 .tasks-ui__todo__delete-button {
     position:absolute;

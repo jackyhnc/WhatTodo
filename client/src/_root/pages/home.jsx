@@ -5,7 +5,6 @@ import '../main.css'
 import '../navbar.css'
 import TasksUI from './components/tasksUI'
 import Popup from './components/popup'
-import Sidebar from './components/sidebar'
 import { v4 as uuidv4 } from 'uuid'
 import { UserAuth } from '../../contexts/AuthContext'
 
@@ -53,7 +52,7 @@ export default function Home() {
             id: uuidv4(),
             user_email: userEmail,
 
-            title:" ",
+            title:"",
             todos_count_limit:10,
             color:"rgb(227, 227, 227)",
 
@@ -63,49 +62,36 @@ export default function Home() {
     }
 
     const [showAddBlocksMenuState, setShowAddBlocksMenuState] = useState(false)
-    function AddBlocksMenu(props) {
-        const { addTaskModule } = props
+    function AddBlocksMenu() {
+        const buttons = [
+            {
+                title:"Add Tasks Module",
+                description:"Neatly track tasks using modules",
+                function:addTaskModule,
+                image:"add tasksmodules icon.png"
+            }
+        ]
 
         return (
-            createPortal(
-                <div className="overlay-background">
-                    <Popup title="Add Blocks" setStateOfPopup={setShowAddBlocksMenuState} buttons={[
-                        {
-                            title:"Add Tasks Module",
-                            description:"Neatly track tasks using modules",
-                            function:addTaskModule,
-                            image:"add tasksmodules icon.png"
-                        },
-                        {
-                            title:"Add Tasks Module",
-                            description:"Neatly track tasks using modules",
-                            function:addTaskModule,
-                            image:"add tasksmodules icon.png"
-                        },
-                        {
-                            title:"Add Tasks Module",
-                            description:"Neatly track tasks using modules",
-                            function:addTaskModule,
-                            image:"add tasksmodules icon.png"
-                        },
-                        {
-                            title:"Add Tasks Module",
-                            description:"Neatly track tasks using modules",
-                            function:addTaskModule,
-                            image:"add tasksmodules icon.png"
-                        },
-                        {
-                            title:"Add Tasks Module",
-                            description:"Neatly track tasks using modules",
-                            function:addTaskModule,
-                            image:"add tasksmodules icon.png"
-                        }
-                    ]}>
-
-                    </Popup>
-                </div>,
-                document.getElementById("overlays")
-            )
+            <Popup title={"Add Blocks"} setStateOfPopup={setShowAddBlocksMenuState}>
+                {/* buttons */}
+                {buttons.map(button => {
+                    return (
+                        <div className="grid grid-cols-[auto,1fr] box-border rounded-2xl
+                        hover:bg-[rgba(0,119,255,0.055)] items-center cursor-pointer group/button" 
+                        onClick={e => {button.function(); setShowAddBlocksMenuState(false)}}
+                        key={button.title}>
+                            <img className="w-16 m-2 rounded-xl border-[1px] 
+                            hover:bg-[rgba(0,119,255,0.055)] group-hover/button:brightness-[0.97]"
+                            src={button.image}></img>
+                            <div className="p-2 max-w-[200px] cursor-pointer flex flex-col gap-0.5">
+                                <div className="cursor-pointer">{button.title}</div>
+                                <div className="cursor-pointer text-xs text-gray-600">{button.description}</div>
+                            </div>
+                        </div>
+                    )
+                })}
+            </Popup>
         )
     }
     useEffect(()=>{
@@ -120,59 +106,63 @@ export default function Home() {
     })
 
     return (
-        <>
-            <div className='home-header'>
-                <img onClick={e => postData()} className="header__hamburger-icon" src="hamburger.svg" alt="Hamburger" />
+        <div className="mt-[48px] overscroll-none w-full">
+            <div className='h-12 w-full grid grid-cols-[0.25fr_5fr_0.2fr_0.25fr] bg-white z-[100] border-b-2
+             border-b-[rgb(241,241,241)] bg-[rgb(255,255,255] items-center text-lg font-medium fixed top-0 '>
+                <img className="header__hamburger-icon" src="hamburger.svg" alt="Hamburger" />
                 <div className="header__title">Summer 2023</div>
-                <button className="header__share-button" onClick={e => getData()}>Share</button>
+                <button className="header__share-button" >Share</button>
                 <img className="header__profile-picture" src="profile.jpg"/>
             </div>
-            <div className="title-container">
-                <div className="absolute bottom-0 left-[110px] m-0 text-5xl font-bold z-10" onClick={e => addTaskModule()}>Summer 2023</div>
-                <div className="wallpaper-image__gradient"></div>
-                <img className="wallpaper-image" src="b64aa1258b6197b2fd037b6dab551aad.png"/>
-            </div>
-            <div className="quote-container">
-                <p className="quote-container__quote">“Opportunities don't happen, you create them.”</p>
-                <p className="quote-container__cite"> — Chris Grosser</p>
-            </div>
 
-            <main>
-                <Sidebar/>
-                {/* Blocks container */}
-                <div className="group/main flex flex-col gap-10 w-full px-12">
-                    {tasksModules.map(module => {
-                        return (
-                            <div key={module.id}>
-                                <TasksUI>
-                                    {{
-                                        tasksUIId: module.id,
-                                        importedTodos: module.todos,
-                                        tasksModules: tasksModules,
-                                        setTasksModules: setTasksModules,
-                                        custom: {
-                                            tasksUITitle: module.title,
-                                            tasksUITodosCountLimit: module.todos_count_limit,
-                                            tasksUIColor: module.color
-                                        }
-                                    }}
-                                </TasksUI>
-                            </div>
-                        )
-                    })}
+            <img className="overflow-clip w-full object-cover object-center h-[250px]" src="b64aa1258b6197b2fd037b6dab551aad.png"/>
+
+            <div className="px-[70px] flex flex-col gap-14">
+                <div className="grid grid-cols-[] gap-3 my-3 w-fit">
+                    <div className="text-3xl font-bold w-fit">Summer 2023</div>
+                    <div className="flex flex-col">
+                        <div className="">“Opportunities don't happen, you create them.”</div>
+                        <div className="self-end">—Chris Grosser</div>
+                    </div>
+                </div>
+
+                <main className="flex flex-col h-full group/blocks-container gap-10 pb-[40vh]">
+
+                    {/* Blocks container */}
+                    <div className="flex flex-wrap gap-10 w-full">
+                        {tasksModules.map(module => {
+                            return (
+                                <div key={module.id}>
+                                    <TasksUI>
+                                        {{
+                                            tasksUIId: module.id,
+                                            importedTodos: module.todos,
+                                            tasksModules: tasksModules,
+                                            setTasksModules: setTasksModules,
+                                            custom: {
+                                                tasksUITitle: module.title,
+                                                tasksUITodosCountLimit: module.todos_count_limit,
+                                                tasksUIColor: module.color
+                                            }
+                                        }}
+                                    </TasksUI>
+                                </div>
+                            )
+                        })}
+                    </div>
 
                     {/* Add blocks button */}
-                    {showAddBlocksMenuState && <AddBlocksMenu addTaskModule={addTaskModule}/>}
-                    <div className="group/add-blocks-button group-hover/main:opacity-100 ml-2 py-2 px-4 w-fit 
-                    rounded-3xl transition duration-200 bg-[rgb(247,247,247)] flex flex-row gap-2
-                    items-center text-[rgba(147,147,147,255)] opacity-40 cursor-pointer hover:bg-[rgb(241,241,241)]"
-                    onClick={() => setShowAddBlocksMenuState(!showAddBlocksMenuState)}>
+                    {showAddBlocksMenuState && <AddBlocksMenu/>}
+                    <div className="group-hover/blocks-container:opacity-100 group/add-block py-2 px-4 w-fit 
+                        rounded-3xl transition duration-200 bg-[rgb(247,247,247)] flex flex-row gap-2
+                        items-center text-[rgba(147,147,147,255)] opacity-40 cursor-pointer hover:bg-[rgb(241,241,241)]"
+                        onClick={() => setShowAddBlocksMenuState(!showAddBlocksMenuState)}>
                         <div className="cursor-pointer">Add block</div>
                         <i className="fa-regular fa-plus"></i>
                     </div>
+                </main>
 
-                </div>
-            </main>
-        </>
+            </div>
+        </div>
     )
 }

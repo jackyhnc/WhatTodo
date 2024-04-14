@@ -39,7 +39,7 @@ export default function Signup() {
             }
 
             await createUser(email, password)
-            navigate("/home")
+            navigate("/loggedin/home")
         } catch(err) {
             if (err.message === "Firebase: Error (auth/email-already-in-use).") {
                 setErrMsg("Email in use.")
