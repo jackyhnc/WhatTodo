@@ -8,15 +8,15 @@ app.use(cors())
 app.use(express.json())
 
 //get data from database 
-app.get("/tasksModules/:userEmail", async (req, res) => {
+app.get("/blocks/:userEmail", async (req, res) => {
     try {
         const { userEmail } = req.params
 
-        const selectedTasksModules = await pool.query(
-            `SELECT * FROM tasksModules WHERE user_email = $1;`,[userEmail]
+        const selectedBlocks = await pool.query(
+            `SELECT * FROM blocks WHERE user_email = $1;`,[userEmail]
         )
-        console.log(selectedTasksModules)
-        res.send(selectedTasksModules.rows)
+        console.log(selectedBlocks)
+        res.send(selectedBlocks.rows)
 
         console.log('gotten')
     } catch (error) {
@@ -25,22 +25,20 @@ app.get("/tasksModules/:userEmail", async (req, res) => {
 })
 
 //send data to database
-app.post("/tasksModules", async (req,res) => {
+app.post("/blocks", async (req,res) => {
     try {
-        const tasksModules = req.body
-        const newTasksModules = await tasksModules.map(taskModule => {
-            const { id, user_email, title, todos_count_limit, color, todos } = taskModule
+        const blocks = req.body
+        const sendNewBlocks = await blocks.map(block => {
+            const { block_id, spaces_id, block_type, content } = block
             pool.query(
-                `INSERT INTO tasksModules(id, user_email, title, todos_count_limit, color, todos) 
-                VALUES ($1, $2, $3, $4, $5, $6)
-                ON CONFLICT (id) DO UPDATE
-                    SET 
-                        user_email = EXCLUDED.user_email, 
-                        title = EXCLUDED.title, 
-                        todos_count_limit = EXCLUDED.todos_count_limit, 
-                        color = EXCLUDED.color, 
-                        todos = EXCLUDED.todos;`
-            ,[id, user_email, title, todos_count_limit, color, JSON.stringify(todos)])
+                `INSERT INTO blocks(block_id, spaces_id, block_type, content) 
+                VALUES ($1, $2, $3, $4)
+                ON CONFLICT (blocks_id) DO UPDATE
+                    SET
+                        spaces_id = EXCLUDED.spaces_id
+                        block_type = EXCLUDED.block_type
+                        content = EXCLUDED.content;`
+            ,[block_id, spaces_id, block_type, JSON.stringify(content)])
         })
 
         console.log('updated')

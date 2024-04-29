@@ -1,29 +1,28 @@
-import { useState, useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import '../headertitle.css'
-import '../main.css'
-import '../navbar.css'
+import { useState, useEffect, memo } from 'react'
+
 import TasksUI from './components/tasksUI'
 import Popup from './components/popup'
+
 import { v4 as uuidv4 } from 'uuid'
 import { UserAuth } from '../../contexts/AuthContext'
 
+export default memo(function UntitledSpace(props) {
+    const { space } = props
+    const spaceContent = space.space_content
 
-export default function Home() {
+
     const { user, logout } = UserAuth()
     console.log(user)
 
-    const [tasksModules, setTasksModules] = useState([])
-
-    const userEmail = "user.email"
+    const [blocks, setBlocks] = useState([])
 
     const getData = async () => {
         try{
-            const response = await fetch(`${import.meta.env.VITE_SERVERURL}/tasksModules/${userEmail}`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVERURL}/blocks/${user.email}`, {
                 method: 'GET',
             })
             const json = await response.json()
-            setTasksModules(json)
+            setBlocks(json)
             console.log("gotten")
         } catch(err) {
             console.error(err)
@@ -33,10 +32,10 @@ export default function Home() {
     
     const postData = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_SERVERURL}/tasksModules/`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVERURL}/blocks/`, {
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
-                body: JSON.stringify(tasksModules)
+                body: JSON.stringify(blocks)
             })
             console.log('posted')
         } catch (err) {
@@ -45,20 +44,28 @@ export default function Home() {
     }
     useEffect(()=>{
         postData()
-    },[tasksModules])
+    },[blocks])
     
-    const addTaskModule = () => {
-        const newTaskModule = {
-            id: uuidv4(),
-            user_email: userEmail,
-
-            title:"",
-            todos_count_limit:10,
-            color:"rgb(227, 227, 227)",
-
-            todos: []
+    const addBlock = (blockType) => {
+        const blockTypeToContentPairs = {
+            taskModule:{
+                id: uuidv4(),
+    
+                title:"",
+                todos_count_limit:10,
+                color:"rgb(227, 227, 227)",
+    
+                todos: []
+            },
         }
-        setTasksModules([...tasksModules, newTaskModule])
+
+        const newBlock = {
+            block_id:uuidv4(),
+            spaces_id:"", //get form page
+            block_type:blockType,
+            content:blockTypeToContentPairs[blockType]
+        }
+        setBlocks([...blocks, newBlock])
     }
 
     const [showAddBlocksMenuState, setShowAddBlocksMenuState] = useState(false)
@@ -67,17 +74,16 @@ export default function Home() {
             {
                 title:"Add Tasks Module",
                 description:"Neatly track tasks using modules",
-                function:addTaskModule,
+                function:() => {addBlock("taskModule")},
                 image:"add tasksmodules icon.png"
             }
         ]
 
         return (
             <Popup title={"Add Blocks"} setStateOfPopup={setShowAddBlocksMenuState}>
-                {/* buttons */}
                 {buttons.map(button => {
                     return (
-                        <div className="grid grid-cols-[auto,1fr] box-border rounded-2xl
+                        <div className="my-2 grid grid-cols-[auto,1fr] box-border rounded-2xl
                         hover:bg-[rgba(0,119,255,0.055)] items-center cursor-pointer group/button" 
                         onClick={e => {button.function(); setShowAddBlocksMenuState(false)}}
                         key={button.title}>
@@ -103,53 +109,62 @@ export default function Home() {
 
         document.addEventListener("keydown",handleCommand)
         return () => {document.removeEventListener("keydown",handleCommand)}
-    })
+    },[])
+
+    const blockTypeToBlockComponentPairs = {
+        taskModule: TasksUI
+    }
+    //b64aa1258b6197b2fd037b6dab551aad.png
+
+    let randomQuoteFromSpace = {}
+    useEffect(function chooseRandomQuote() {
+        const randomQuoteIndex = Math.floor(Math.random() * spaceContent.quotes.length)
+        const randomQuote = spaceContent.quotes[randomQuoteIndex]
+
+        randomQuoteFromSpace = randomQuote
+    },[])
 
     return (
-        <div className="mt-[48px] overscroll-none w-full">
-            <div className='h-12 w-full grid grid-cols-[0.25fr_5fr_0.2fr_0.25fr] bg-white z-[100] border-b-2
-             border-b-[rgb(241,241,241)] bg-[rgb(255,255,255] items-center text-lg font-medium fixed top-0 '>
-                <img className="header__hamburger-icon" src="hamburger.svg" alt="Hamburger" />
-                <div className="header__title">Summer 2023</div>
-                <button className="header__share-button" >Share</button>
-                <img className="header__profile-picture" src="profile.jpg"/>
-            </div>
+        <div className="overscroll-none w-full bg-white">
+            {spaceContent.banner_img ?
+                <img className="w-full object-cover object-center h-[250px]" src={spaceContent.banner_img}/>
+                : null
+            }
 
-            <img className="overflow-clip w-full object-cover object-center h-[250px]" src="b64aa1258b6197b2fd037b6dab551aad.png"/>
-
-            <div className="px-[70px] flex flex-col gap-14">
-                <div className="grid grid-cols-[] gap-3 my-3 w-fit">
-                    <div className="text-3xl font-bold w-fit">Summer 2023</div>
-                    <div className="flex flex-col">
-                        <div className="">“Opportunities don't happen, you create them.”</div>
-                        <div className="self-end">—Chris Grosser</div>
-                    </div>
+            <div className="px-[70px] pt-8 flex flex-col gap-6">
+                <div className="flex flex-col gap-3 size-fit text-center">
+                    <div className="text-3xl font-bold size-fit">{space.title?? "Untitled"}</div>
+                    {/* quote adder, make it a popup, can make page a folder and add this comp to folder */}
+                    {spaceContent.quotes.length ? 
+                        <div className="flex flex-col">
+                            <div className="">{`${randomQuoteFromSpace.quote}`}</div>
+                            <div className="self-end">{`${randomQuoteFromSpace.author}`}</div>
+                        </div>
+                        : null
+                    }
                 </div>
 
                 <main className="flex flex-col h-full group/blocks-container gap-10 pb-[40vh]">
-
                     {/* Blocks container */}
-                    <div className="flex flex-wrap gap-10 w-full">
-                        {tasksModules.map(module => {
-                            return (
-                                <div key={module.id}>
-                                    <TasksUI>
-                                        {{
-                                            tasksUIId: module.id,
-                                            importedTodos: module.todos,
-                                            tasksModules: tasksModules,
-                                            setTasksModules: setTasksModules,
-                                            custom: {
-                                                tasksUITitle: module.title,
-                                                tasksUITodosCountLimit: module.todos_count_limit,
-                                                tasksUIColor: module.color
-                                            }
-                                        }}
-                                    </TasksUI>
-                                </div>
-                            )
-                        })}
-                    </div>
+                    {blocks.length ? 
+                        <div className="flex flex-wrap gap-10 w-full">
+                            {blocks.map(block => {
+                                const BlockComponent = blockTypeToBlockComponentPairs[block.block_type]
+                                return (
+                                    <div key={block.content.id}>
+                                        <BlockComponent
+                                            blockId={block.block_id}
+                                            content={block.content}
+
+                                            blocks={blocks}
+                                            setBlocks={setBlocks}
+                                        />
+                                    </div>
+                                )
+                            })}
+                        </div> 
+                        : null
+                    }
 
                     {/* Add blocks button */}
                     {showAddBlocksMenuState && <AddBlocksMenu/>}
@@ -165,4 +180,4 @@ export default function Home() {
             </div>
         </div>
     )
-}
+})

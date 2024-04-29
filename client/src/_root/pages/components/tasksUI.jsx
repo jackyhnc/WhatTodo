@@ -7,26 +7,40 @@ import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 import './tasks-ui.css'
 import './tasks-ui__options-menu.css'
+import Popup from './popup'
 
 export function TasksUIOptionsMenu(props) {
-    let {tasksUIId,tasksModules,setTasksModules,showOptionsMenuState,
+    const {tasksUIId,blocks,setBlocks,showOptionsMenuState,
         setShowOptionsMenuState,showCheckedTasksHistoryState,
         setShowCheckedTasksHistoryState, title, setTitle 
     } = props
+
+    useEffect(() => {
+        const optionsMenu = document.getElementById(`tasks-ui__options-menu-${tasksUIId}`)
+        const overlay = document.getElementById("overlays")
+
+        const handleClickingOutsideOfOptionsMenu = (e) => {
+            if ( !(optionsMenu.contains(e.target)) && !(overlay.contains(e.target)) ) {
+                //ensures if click inside overlay, options menu still stays on
+                setShowOptionsMenuState(false)
+            }
+        }
+
+        document.addEventListener("mousedown",handleClickingOutsideOfOptionsMenu)
+        return () => {document.removeEventListener("mousedown",handleClickingOutsideOfOptionsMenu)}
+    },[])
 
     const showCheckedTasksHistory = () => {
         setShowCheckedTasksHistoryState(!showCheckedTasksHistoryState)
     }
 
     const [tasksUIColorPickerState, setTasksUIColorPickerState] = useState(false)
-    const [tasksUITitleChangerState, setTasksUITitleChangerState] = useState(false)
-
     function TasksUIColorPicker() {
         const updateTasksUIColor = (selectedColor) => {
-            const newTasksModules = tasksModules.map(module => {
-                return module.id === tasksUIId ? {...module, color:selectedColor} : module
+            const newBlocks = blocks.map(block => {
+                return tasksUIId.id === blockId ? {...block, color:selectedColor} : block
             })
-            setTasksModules(newTasksModules)
+            setBlocks(newBlocks)
         }
 
         const accentColors = {
@@ -38,34 +52,28 @@ export function TasksUIOptionsMenu(props) {
             'Pink':'rgba(255,213,226,1)',
             'Purple':'rgba(237, 223, 255, 1)'
         }
+        
+        const accentColorsString = Object.keys(accentColors)
 
         return (
-            createPortal(
-                <div className="overlay-background">
-                    <div className="tasks-ui__options-menu__popup">
-                        <div className="tasks-ui__options-menu__header-container">
-                            <div className="tasks-ui__options-menu__title">Colors</div>
-                            <button className='tasks-ui__options-menu__back-button' onClick={e => setTasksUIColorPickerState(!tasksUIColorPickerState)}>
-                                <img className="tasks-ui__options-menu__back-icon" src='../back icon.svg'></img>
-                            </button>
+            <Popup title="Colors" setStateOfPopup={setTasksUIColorPickerState}>
+                {/* buttons */}
+
+                {Object.keys(accentColors).map(color => {
+                    return (
+                        <div className="change-accent-color-menu__button" 
+                        onClick={e => {updateTasksUIColor(accentColors[color]); setTasksUIColorPickerState(false)}} 
+                        key={color}>
+                            <div className="change-accent-color-menu__button__color-icon" style={{ background: accentColors[color] }}></div>
+                            <div className="change-accent-color-menu__button__text">{color}</div>
                         </div>
-                        <div className="change-accent-color-menu">
-                            {Object.keys(accentColors).map(color => {
-                                return (
-                                    <div className="change-accent-color-menu__button" onClick={e => updateTasksUIColor(accentColors[color])} key={color}>
-                                        <div className="change-accent-color-menu__button__color-icon" style={{ background: accentColors[color] }}></div>
-                                        <div className="change-accent-color-menu__button__text">{color}</div>
-                                    </div>
-                                )})
-                            }
-                        </div>
-                    </div>
-                </div>,
-                document.getElementById("overlays")
-            )
+                    )
+                })}
+            </Popup>
         )
     }
 
+    const [tasksUITitleChangerState, setTasksUITitleChangerState] = useState(false)
     function TasksUITitleChanger() {
         const [titleInInputBox, setTitleInInputBox] = useState(title)
 
@@ -82,29 +90,19 @@ export function TasksUIOptionsMenu(props) {
         })
 
         return (
-            createPortal(
-                <div className="overlay-background">
-                    <div className="tasks-ui__options-menu__popup">
-                        <div className="tasks-ui__options-menu__header-container">
-                            <div className="tasks-ui__options-menu__title">Title</div>
-                            <button className='tasks-ui__options-menu__back-button' onClick={e => setTasksUITitleChangerState(!tasksUITitleChangerState)}>
-                                <img className="tasks-ui__options-menu__back-icon" src='../back icon.svg'></img>
-                            </button>
-                        </div>
-                        <div className="title-changer-menu-input-button-wrapper">
-                            <input className="title-changer-menu-input-box" 
-                                type="text" 
-                                autoFocus 
-                                maxLength="35"
-                                value={titleInInputBox}
-                                onChange={e => setTitleInInputBox(e.target.value)}>
-                            </input>
-                            <button className="title-changer-menu-enter-button" onClick={e => setTitle(titleInInputBox)}>Enter</button>
-                        </div>
-                    </div>
-                </div>,
-                document.getElementById("overlays")
-            )
+            <Popup title="Title" setStateOfPopup={setTasksUITitleChangerState}>
+                <div className="title-changer-menu-input-button-wrapper">
+                    <input className="title-changer-menu-input-box" 
+                        type="text" 
+                        autoFocus 
+                        maxLength="35"
+                        value={titleInInputBox}
+                        onChange={e => setTitleInInputBox(e.target.value)}>
+                    </input>
+                    <button className="title-changer-menu-enter-button" onClick={e => setTitle(titleInInputBox)}>Enter</button>
+                </div>
+            </Popup>
+
         )
     }
 
@@ -198,29 +196,34 @@ export function TodoCalendar(props) {
 }
 
 export default function TasksUI(props) {
-    const { tasksUIId, importedTodos, tasksModules, setTasksModules } = props.children
-    const { tasksUITitle, tasksUITodosCountLimit, tasksUIColor } = props.children.custom
-    
+    const { blockId, content, blocks, setBlocks } = props  
+
+    const tasksUIId = blockId
+    const importedTodos = content.todos
+    const tasksUITitle = content.title
+    const tasksUITodosCountLimit = content.todos_count_limit
+    const tasksUIColor = content.color
+
     const [todos, setTodos] = useState([])
     useEffect(()=>{setTodos(importedTodos)},[])
     useEffect(()=>{
-        const updatedTasksModules = tasksModules.map(module => {
-            return module.id === tasksUIId ?
+        const updatedTasksModules = blocks.map(module => {
+            return module.id === blockId ?
                 {...module, todos:todos} : module
         })
         
-        setTasksModules(updatedTasksModules)
+        setBlocks(updatedTasksModules)
     },[todos])
 
     const [title, setTitle] = useState("")
     useEffect(()=>{setTitle(tasksUITitle)},[])
     useEffect(()=>{
-        const updatedTasksModules = tasksModules.map(module => {
-            return module.id === tasksUIId ?
+        const updatedTasksModules = blocks.map(module => {
+            return module.id === blockId ?
                 {...module, title:title} :
                 module
         })
-        setTasksModules(updatedTasksModules)
+        setBlocks(updatedTasksModules)
     },[title])
     
     const tasksUITitleObj = useRef()
@@ -347,19 +350,19 @@ export default function TasksUI(props) {
                     </div>
                 </div>
                 {showOptionsMenuState && 
-                <TasksUIOptionsMenu 
+                <TasksUIOptionsMenu
                     tasksUIId={tasksUIId}
-                    tasksModules={tasksModules}
-                    setTasksModules={setTasksModules}
+                    title={title}
+                    setTitle={setTitle}
+
+                    blocks={blocks}
+                    setBlocks={setBlocks}
 
                     showOptionsMenuState={showOptionsMenuState} 
                     setShowOptionsMenuState={setShowOptionsMenuState} 
 
                     showCheckedTasksHistoryState={showCheckedTasksHistoryState}
                     setShowCheckedTasksHistoryState={setShowCheckedTasksHistoryState}
-
-                    title={title}
-                    setTitle={setTitle}
                 />}
             </div>
 

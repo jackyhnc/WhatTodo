@@ -4,7 +4,6 @@ import { createPortal } from 'react-dom'
 
 function Popup(props) {
     const { title, setStateOfPopup, children } = props
-    console.log(props)
     
     useEffect(() => {
         const popupObj = document.getElementById("popup")
@@ -17,7 +16,6 @@ function Popup(props) {
 
         window.addEventListener("mousedown",handleClickingOverlay)
         return () => {window.removeEventListener("mousedown",handleClickingOverlay)}
-
     },[])
     
     return (
@@ -37,7 +35,7 @@ function Popup(props) {
                         </div>
 
                         {/* buttons */}
-                        <div className="py-2 max-h-[350px] overflow-scroll">
+                        <div className="max-h-[350px] px-2 overflow-scroll">
                             {children}
                         </div>
                     </div>
